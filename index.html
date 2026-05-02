@@ -577,15 +577,18 @@ ${timeAgo(createdDate)}</span>
       "auth/weak-password":        "Password must be at least 6 characters.",
       "auth/too-many-requests":    "Too many attempts. Try again later.",
     }[code] || "Something went wrong. Please try again.";
-  }
-
-  // ── Expose to global ─────────────────────────────────────
-  window.handleGoogle   = handleGoogle;
-  window.handleLogin    = handleLogin;
-  window.handleSignup   = handleSignup;
-  window.handleLogout   = handleLogout;
-  window.switchTab      = switchTab;
-  window.handleAddTodo  = handleAddTodo;
+}
+  async function deleteTodo(id) {
+  await deleteDoc(doc(db, "todos", id));
+}
+window.deleteTodo = deleteTodo;
+// ── Expose to global ─────────────────────────────────────
+window.handleGoogle   = handleGoogle;
+window.handleLogin    = handleLogin;
+window.handleSignup   = handleSignup;
+window.handleLogout   = handleLogout;
+window.switchTab      = switchTab;
+window.handleAddTodo  = handleAddTodo;
 
   // Enter key support
   document.getElementById("login-password").addEventListener("keydown",  e => e.key==="Enter" && handleLogin());
