@@ -366,7 +366,7 @@
 <script type="module">
   import { initializeApp }
     from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp }
+  import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, deleteDoc, doc }
     from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
   import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
            signOut, onAuthStateChanged, updateProfile, GoogleAuthProvider, signInWithPopup }
@@ -464,8 +464,9 @@
   });
 
   // ── Build card ───────────────────────────────────────────
-  function buildCard(id, { name, text, createdAt, photoURL }) {
-    const date = createdAt?.toDate?.() ?? null;
+  function buildCard(id, data) {
+  const { name, text, createdAt, uid, date, photoURL } = data;
+const createdDate = createdAt?.toDate?.() ?? null;
     const card = document.createElement("div");
     card.className = "todo-card";
     const col = colorFrom(name);
@@ -478,9 +479,15 @@
       <div class="todo-body">
         <div class="todo-meta">
           <span class="todo-name">${esc(name)}</span>
-          <span class="todo-time" data-ts="${date?.toISOString()??""}">${timeAgo(date)}</span>
+          <span class="todo-time" data-ts="${createdDate?.toISOString()??""}"
+${timeAgo(createdDate)}</span>
         </div>
         <p class="todo-text">${esc(text)}</p>
+        ${
+  (auth.currentUser && auth.currentUser.uid === uid)
+    ? `<button onclick="deleteTodo('${id}')" style="margin-top:8px;color:red;">🗑 Delete</button>`
+    : ""
+}
       </div>`;
     return card;
   }
