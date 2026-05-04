@@ -32,154 +32,107 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
 
-     /* ══ INIT SCREEN ══════════════════════════════════════ */
-    #init-screen {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: var(--bg);
+    /* ══ SPLASH SCREEN ══════════════════════════════════════ */
+    #splash-screen {
+      position: fixed; inset: 0; background: var(--bg);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 16px;
+      z-index: 9999; transition: opacity .4s ease;
     }
-    .init-logo {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 14px;
-      animation: fadeUp .4s cubic-bezier(.22,1,.36,1);
+    #splash-screen .splash-icon {
+      width: 80px; height: 80px; background: var(--accent);
+      border-radius: 20px; display: flex; align-items: center; justify-content: center;
     }
-    .init-logo-icon {
-      width: 60px; height: 60px;
-      background: var(--accent);
-      border-radius: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.8rem;
-      box-shadow: 0 4px 20px rgba(197,96,58,.3);
+    #splash-screen h2 {
+      font-family: 'DM Serif Display', serif; font-size: 1.6rem;
+      letter-spacing: -0.02em; color: var(--text);
     }
-    .init-logo h1 {
-      font-family: 'DM Serif Display', serif;
-      font-size: 1.8rem;
-      letter-spacing: -0.02em;
+    #splash-screen h2 span { color: var(--accent); font-style: italic; }
+    #splash-screen p { color: var(--muted); font-size: 0.85rem; }
+    .splash-dots { display: flex; gap: 6px; }
+    .splash-dot {
+      width: 7px; height: 7px; border-radius: 50%; background: var(--accent);
+      animation: dotPulse 1.2s ease-in-out infinite;
     }
-    .init-logo h1 span { color: var(--accent); font-style: italic; }
-    .init-dots { display: flex; gap: 6px; margin-top: 4px; }
-    .init-dots span {
-      width: 7px; height: 7px;
-      background: var(--accent);
-      border-radius: 50%;
-      animation: dotBounce 1.2s infinite ease-in-out;
+    .splash-dot:nth-child(2) { animation-delay: .2s; }
+    .splash-dot:nth-child(3) { animation-delay: .4s; }
+    @keyframes dotPulse {
+      0%,80%,100% { opacity: .2; transform: scale(.8); }
+      40%          { opacity: 1;  transform: scale(1); }
     }
-    .init-dots span:nth-child(2) { animation-delay: .2s; }
-    .init-dots span:nth-child(3) { animation-delay: .4s; }
 
-    /* ══ AUTH SCREEN ══════════════════════════════════════ */
+    /* ══ AUTH ════════════════════════════════════════════════ */
     #auth-screen {
-      min-height: 100vh;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 24px 16px;
+      min-height: 100vh; display: none;
+      align-items: center; justify-content: center; padding: 24px 16px;
     }
-
     .auth-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 24px;
-      box-shadow: 0 8px 40px rgba(43,34,23,.12);
-      padding: 40px 36px 36px;
-      width: 100%;
-      max-width: 420px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 24px; box-shadow: 0 8px 40px rgba(43,34,23,.12);
+      padding: 40px 36px 36px; width: 100%; max-width: 420px;
       animation: fadeUp .4s cubic-bezier(.22,1,.36,1);
     }
-
     .auth-logo { text-align: center; margin-bottom: 28px; }
     .auth-logo .logo-icon {
-      width: 52px; height: 52px;
-      background: var(--accent);
-      border-radius: 14px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
-      margin-bottom: 12px;
+      width: 52px; height: 52px; background: var(--accent); border-radius: 14px;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: 1.5rem; margin-bottom: 12px;
     }
-    .auth-logo h1 {
-      font-family: 'DM Serif Display', serif;
-      font-size: 1.6rem;
-      letter-spacing: -0.02em;
-    }
+    .auth-logo h1 { font-family: 'DM Serif Display', serif; font-size: 1.6rem; letter-spacing: -0.02em; }
     .auth-logo h1 span { color: var(--accent); font-style: italic; }
     .auth-logo p { font-size: 0.85rem; color: var(--muted); margin-top: 4px; }
 
-    .auth-tabs {
-      display: flex;
-      background: var(--bg);
-      border-radius: 10px;
-      padding: 4px;
-      margin-bottom: 24px;
+    .google-btn {
+      width: 100%; padding: 12px; background: var(--surface);
+      border: 1.5px solid var(--border); border-radius: 10px;
+      font-family: inherit; font-size: 0.92rem; font-weight: 600;
+      color: var(--text); cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      transition: border-color .2s, box-shadow .2s; margin-bottom: 6px;
     }
+    .google-btn:hover { border-color: #4285F4; box-shadow: 0 2px 10px rgba(66,133,244,.2); }
+
+    .or-divider {
+      display: flex; align-items: center; gap: 12px;
+      margin: 16px 0; color: var(--muted); font-size: 0.78rem;
+    }
+    .or-divider::before, .or-divider::after { content:''; flex:1; height:1px; background:var(--border); }
+
+    .auth-tabs { display:flex; background:var(--bg); border-radius:10px; padding:4px; margin-bottom:20px; }
     .auth-tab {
-      flex: 1; padding: 9px; border: none;
-      background: transparent; border-radius: 8px;
-      font-family: inherit; font-size: 0.875rem; font-weight: 500;
-      color: var(--muted); cursor: pointer; transition: all .2s;
+      flex:1; padding:9px; border:none; background:transparent; border-radius:8px;
+      font-family:inherit; font-size:0.875rem; font-weight:500; color:var(--muted); cursor:pointer; transition:all .2s;
     }
-    .auth-tab.active {
-      background: var(--surface); color: var(--text);
-      box-shadow: 0 1px 6px rgba(43,34,23,.1);
-    }
+    .auth-tab.active { background:var(--surface); color:var(--text); box-shadow:0 1px 6px rgba(43,34,23,.1); }
 
-    .auth-form { display: flex; flex-direction: column; gap: 14px; }
-
-    .field-group { display: flex; flex-direction: column; gap: 6px; }
-    .field-group label {
-      font-size: 0.72rem; font-weight: 600;
-      letter-spacing: .08em; text-transform: uppercase; color: var(--muted);
-    }
+    .auth-form { display:flex; flex-direction:column; gap:14px; }
+    .field-group { display:flex; flex-direction:column; gap:6px; }
+    .field-group label { font-size:0.72rem; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); }
     .field-group input {
-      width: 100%;
-      border: 1.5px solid var(--border);
-      border-radius: 10px; padding: 11px 14px;
-      font-family: inherit; font-size: 0.95rem;
-      color: var(--text); background: var(--bg);
-      outline: none; transition: border-color .2s, box-shadow .2s;
+      width:100%; border:1.5px solid var(--border); border-radius:10px; padding:11px 14px;
+      font-family:inherit; font-size:0.95rem; color:var(--text); background:var(--bg);
+      outline:none; transition:border-color .2s, box-shadow .2s;
     }
-    .field-group input:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px var(--accent-lt);
-    }
-    .field-group input::placeholder { color: var(--muted); }
+    .field-group input:focus { border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-lt); }
+    .field-group input::placeholder { color:var(--muted); }
 
     .auth-btn {
-      width: 100%; padding: 13px;
-      background: var(--accent); color: #fff;
-      font-family: inherit; font-size: 0.95rem; font-weight: 600;
-      border: none; border-radius: 10px; cursor: pointer;
-      transition: background .2s, transform .12s, box-shadow .2s;
-      margin-top: 4px;
+      width:100%; padding:13px; background:var(--accent); color:#fff;
+      font-family:inherit; font-size:0.95rem; font-weight:600;
+      border:none; border-radius:10px; cursor:pointer;
+      transition:background .2s, transform .12s, box-shadow .2s; margin-top:4px;
     }
-    .auth-btn:hover { background: #b0532e; box-shadow: 0 4px 14px rgba(197,96,58,.35); }
-    .auth-btn:active { transform: scale(.98); }
-    .auth-btn:disabled { background: var(--muted); cursor: not-allowed; box-shadow: none; }
-    .auth-btn .spinner {
-      display: none; width: 16px; height: 16px;
-      border: 2px solid rgba(255,255,255,.4); border-top-color: #fff;
-      border-radius: 50%; animation: spin .6s linear infinite; margin: 0 auto;
-    }
-    .auth-btn.loading .btn-text { display: none; }
-    .auth-btn.loading .spinner  { display: block; }
+    .auth-btn:hover { background:#b0532e; box-shadow:0 4px 14px rgba(197,96,58,.35); }
+    .auth-btn:active { transform:scale(.98); }
+    .auth-btn:disabled { background:var(--muted); cursor:not-allowed; }
+    .auth-btn .spinner { display:none; width:16px; height:16px; border:2px solid rgba(255,255,255,.4); border-top-color:#fff; border-radius:50%; animation:spin .6s linear infinite; margin:0 auto; }
+    .auth-btn.loading .btn-text { display:none; }
+    .auth-btn.loading .spinner  { display:block; }
 
-    .auth-error {
-      display: none;
-      background: #fff5f5; border: 1px solid #fed7d7;
-      color: var(--danger); font-size: 0.82rem;
-      padding: 10px 14px; border-radius: 8px; text-align: center;
-    }
-    .auth-error.show { display: block; }
-
-    .auth-divider { text-align: center; font-size: 0.78rem; color: var(--muted); margin-top: 4px; }
-    .auth-divider a { color: var(--accent); text-decoration: none; font-weight: 600; }
+    .auth-error { display:none; background:#fff5f5; border:1px solid #fed7d7; color:var(--danger); font-size:0.82rem; padding:10px 14px; border-radius:8px; text-align:center; }
+    .auth-error.show { display:block; }
+    .auth-divider { text-align:center; font-size:0.78rem; color:var(--muted); margin-top:4px; }
+    .auth-divider a { color:var(--accent); text-decoration:none; font-weight:600; }
 
     /* ══ APP ═════════════════════════════════════════════════ */
     #app-screen { display:none; padding:32px 16px 80px; }
@@ -375,6 +328,15 @@
     }
     .item-text.done { text-decoration:line-through; color:var(--muted); }
 
+    /* Delete button */
+    .delete-card-btn {
+      background: none; border: none; cursor: pointer;
+      font-size: 1rem; padding: 4px 6px; border-radius: 8px;
+      opacity: 0.4; transition: opacity .2s, background .2s;
+      margin-left: 4px; flex-shrink: 0;
+    }
+    .delete-card-btn:hover { opacity: 1; background: #fff0f0; }
+
     /* Progress bar */
     .todo-progress { margin-top:10px; }
     .progress-bar-bg { height:4px; background:var(--border); border-radius:4px; overflow:hidden; }
@@ -385,11 +347,7 @@
     @keyframes slideIn { from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);} }
     @keyframes spin    { to{transform:rotate(360deg);} }
     @keyframes shimmer { to{background-position:-200% 0;} }
-     @keyframes dotBounce {
-      0%, 80%, 100% { transform: scale(0.6); opacity: .4; }
-      40%           { transform: scale(1);   opacity: 1;  }
-    }
-    
+
     @media(max-width:480px){
       .auth-card{padding:28px 20px 24px;}
       .week-grid{gap:3px;}
@@ -399,7 +357,29 @@
   </style>
 </head>
 <body>
-  
+
+<!-- ══ SPLASH SCREEN ═══════════════════════════════════════ -->
+<div id="splash-screen">
+  <div class="splash-icon">
+    <svg width="44" height="44" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <rect x="18" y="28" width="64" height="62" rx="6" fill="white" opacity="0.95"/>
+      <rect x="34" y="18" width="32" height="18" rx="9" fill="#9B4428"/>
+      <rect x="28" y="50" width="44" height="6" rx="3" fill="#C5603A" opacity="0.45"/>
+      <rect x="28" y="62" width="34" height="6" rx="3" fill="#C5603A" opacity="0.35"/>
+      <rect x="28" y="74" width="38" height="6" rx="3" fill="#C5603A" opacity="0.35"/>
+      <circle cx="36" cy="88" r="8" fill="#38a169"/>
+      <path d="M32 88 L35 91 L40 85" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+  <h2>Public <span>Todo</span> Board</h2>
+  <p>Loading your board...</p>
+  <div class="splash-dots">
+    <div class="splash-dot"></div>
+    <div class="splash-dot"></div>
+    <div class="splash-dot"></div>
+  </div>
+</div>
+
 <!-- ══ AUTH SCREEN ════════════════════════════════════════ -->
 <div id="auth-screen">
   <div class="auth-card">
@@ -445,7 +425,7 @@
     <div class="auth-form" id="signup-form" style="display:none;">
       <div class="field-group">
         <label>Your Name</label>
-        <input id="signup-name" type="text" placeholder="e.g. Divyansh" maxlength="40" autocomplete="name"/>
+        <input id="signup-name" type="text" placeholder="e.g. Alex" maxlength="40" autocomplete="name"/>
       </div>
       <div class="field-group">
         <label>Email</label>
@@ -482,7 +462,7 @@
     <!-- Header -->
     <header>
       <h1>Public <span>Todo</span> Board</h1>
-      <p>A shared space for everyone’s tasks. Add todos for the day.</p>
+      <p>Add todos for any day — everyone sees them instantly.</p>
     </header>
 
     <!-- Weekly Calendar -->
@@ -512,24 +492,36 @@
       </button>
     </div>
 
-    <!-- List -->
+    <!-- My Todos Section -->
     <div class="list-header">
-      <h2>Todos</h2>
-      <span id="count-badge">0</span>
+      <h2>My Todos</h2>
+      <span id="my-count-badge">0</span>
       <span id="date-filter-label"></span>
     </div>
 
     <div id="loading-state">
       <div class="skeleton"><div class="skeleton-avatar"></div><div class="skeleton-lines"><div class="skeleton-line short"></div><div class="skeleton-line long"></div><div class="skeleton-line tiny"></div></div></div>
-      <div class="skeleton"><div class="skeleton-avatar"></div><div class="skeleton-lines"><div class="skeleton-line short"></div><div class="skeleton-line long"></div><div class="skeleton-line tiny"></div></div></div>
     </div>
 
-    <div id="empty-state" style="display:none;">
-      <div class="icon">📅</div>
-      <p id="empty-msg">No todos for this day yet!</p>
+    <div id="my-empty-state" style="display:none; text-align:center; padding:24px 0; color:var(--muted);">
+      <div style="font-size:1.8rem; margin-bottom:6px;">✏️</div>
+      <p style="font-size:0.88rem;">You haven't added any todos for this day yet!</p>
     </div>
 
-    <div id="todo-list" style="display:none;"></div>
+    <div id="my-todo-list" style="display:none; flex-direction:column; gap:12px;"></div>
+
+    <!-- Others Todos Section -->
+    <div class="list-header" style="margin-top:28px;">
+      <h2>Everyone's Todos</h2>
+      <span id="others-count-badge">0</span>
+    </div>
+
+    <div id="others-empty-state" style="display:none; text-align:center; padding:24px 0; color:var(--muted);">
+      <div style="font-size:1.8rem; margin-bottom:6px;">📅</div>
+      <p id="others-empty-msg" style="font-size:0.88rem;">No todos from others for this day yet!</p>
+    </div>
+
+    <div id="others-todo-list" style="display:none; flex-direction:column; gap:12px; margin-bottom:32px;"></div>
 
   </div>
 </div>
@@ -538,7 +530,7 @@
   import { initializeApp }
     from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import { getFirestore, collection, addDoc, query, orderBy,
-           onSnapshot, serverTimestamp, doc, updateDoc }
+           onSnapshot, serverTimestamp, doc, updateDoc, deleteDoc }
     from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
   import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
            signOut, onAuthStateChanged, updateProfile, GoogleAuthProvider, signInWithPopup }
@@ -676,7 +668,7 @@
 
   // ── BUILD CARD ───────────────────────────────────────────
   function buildCard(docId, data){
-    const { name, items, createdAt, photoURL, dateKey } = data;
+    const { name, items, createdAt, photoURL, dateKey, uid } = data;
     const date = createdAt?.toDate?.() ?? null;
     const col  = colorFrom(name);
 
@@ -700,6 +692,7 @@
         <span class="item-text${item.done?' done':''}">${esc(item.text)}</span>
       </div>`).join('');
 
+    const isOwner = auth.currentUser?.uid === uid;
     card.innerHTML = `
       <div class="todo-card-header">
         <div class="avatar" ${avatarStyle}>${avatarHTML}</div>
@@ -708,6 +701,7 @@
           <div class="todo-time" data-ts="${date?.toISOString()??''}">${timeAgo(date)}</div>
         </div>
         <span class="todo-date-tag">${formatBadge(dateKey||todayStr())}</span>
+        ${isOwner ? `<button class="delete-card-btn" onclick="deleteTodo('${docId}')" title="Delete">🗑️</button>` : ''}
       </div>
       <div class="todo-items">${itemsHTML}</div>
       ${total>0?`
@@ -730,28 +724,75 @@
     } catch(e){ console.error(e); }
   }
 
+  // ── DELETE TODO ──────────────────────────────────────────
+  async function deleteTodo(docId){
+    if(!confirm('Delete this todo?')) return;
+    try {
+      await deleteDoc(doc(db,'todos',docId));
+    } catch(e){ alert('Could not delete. Please try again.'); }
+  }
+
   // ── RENDER LIST ──────────────────────────────────────────
   function renderList(){
-    const list     = document.getElementById('todo-list');
-    const empty    = document.getElementById('empty-state');
-    const loading  = document.getElementById('loading-state');
-    const badge    = document.getElementById('count-badge');
+    const uid = auth.currentUser?.uid;
+    const filtered = allTodos.filter(t => t.dateKey === selectedDate);
 
-    const filtered = allTodos.filter(t=> t.dateKey === selectedDate);
-    badge.textContent = filtered.length;
+    const myTodos     = filtered.filter(t => t.uid === uid);
+    const otherTodos  = filtered.filter(t => t.uid !== uid);
 
-    if(filtered.length===0){
-      empty.style.display='block'; list.style.display='none';
-      document.getElementById('empty-msg').textContent = `No todos for ${formatBadge(selectedDate)} yet!`;
+    // Hide loading skeleton
+    document.getElementById('loading-state').style.display = 'none';
+
+    // ── My Todos ──
+    const myList  = document.getElementById('my-todo-list');
+    const myEmpty = document.getElementById('my-empty-state');
+    const myBadge = document.getElementById('my-count-badge');
+    myBadge.textContent = myTodos.length;
+    if(myTodos.length === 0){
+      myEmpty.style.display = 'block';
+      myList.style.display  = 'none';
     } else {
-      empty.style.display='none'; list.style.display='flex';
-      list.innerHTML='';
-      filtered.forEach(t=> list.appendChild(buildCard(t.id, t)));
+      myEmpty.style.display = 'none';
+      myList.style.display  = 'flex';
+      myList.innerHTML = '';
+      myTodos.forEach(t => myList.appendChild(buildCard(t.id, t)));
     }
+
+    // ── Others Todos ──
+    const otherList  = document.getElementById('others-todo-list');
+    const otherEmpty = document.getElementById('others-empty-state');
+    const otherBadge = document.getElementById('others-count-badge');
+    otherBadge.textContent = otherTodos.length;
+    if(otherTodos.length === 0){
+      otherEmpty.style.display = 'block';
+      otherList.style.display  = 'none';
+      document.getElementById('others-empty-msg').textContent = `No todos from others for ${formatBadge(selectedDate)} yet!`;
+    } else {
+      otherEmpty.style.display = 'none';
+      otherList.style.display  = 'flex';
+      otherList.innerHTML = '';
+      otherTodos.forEach(t => otherList.appendChild(buildCard(t.id, t)));
+    }
+
+    // Update date label
+    document.getElementById('date-filter-label').textContent = `Showing: ${formatBadge(selectedDate)}`;
   }
 
   // ── AUTH STATE ───────────────────────────────────────────
-  onAuthStateChanged(auth, user=>{
+  // ── Splash + Auth state ──────────────────────────────────
+  // Show splash for at least 1.5s, then go to app (if logged in) or login screen
+  let authResolved = false;
+  let splashDone   = false;
+  let resolvedUser = null;
+
+  function hideSplash(){
+    const s = document.getElementById('splash-screen');
+    s.style.opacity = '0';
+    setTimeout(()=>{ s.style.display='none'; }, 400);
+  }
+
+  function showScreen(user){
+    hideSplash();
     if(user){
       document.getElementById('auth-screen').style.display='none';
       document.getElementById('app-screen').style.display='block';
@@ -764,12 +805,10 @@
       if(photo){ av.innerHTML=`<img src="${photo}" referrerpolicy="no-referrer">`; }
       else { av.style.background=colorFrom(name); av.textContent=initials(name); }
 
-      // Init UI
       renderLines(1);
       renderCalendar();
       updateAddCardDate();
 
-      // Subscribe
       firstLoad=true;
       const q = query(todosRef, orderBy('createdAt','desc'));
       unsubTodos = onSnapshot(q, snap=>{
@@ -778,13 +817,27 @@
         renderCalendar();
         renderList();
       });
-
     } else {
       document.getElementById('auth-screen').style.display='flex';
+      document.getElementById('auth-screen').style.alignItems='center';
+      document.getElementById('auth-screen').style.justifyContent='center';
       document.getElementById('app-screen').style.display='none';
       if(unsubTodos){ unsubTodos(); unsubTodos=null; }
       allTodos=[]; firstLoad=true;
     }
+  }
+
+  // Minimum splash duration: 1500ms so user never sees login flash
+  setTimeout(()=>{
+    splashDone = true;
+    if(authResolved) showScreen(resolvedUser);
+  }, 1500);
+
+  onAuthStateChanged(auth, user=>{
+    resolvedUser  = user;
+    authResolved  = true;
+    if(splashDone) showScreen(user);
+    // else wait for setTimeout above
   });
 
   // ── ADD TODO ─────────────────────────────────────────────
@@ -862,7 +915,7 @@
   window.handleSignup=handleSignup; window.handleLogout=handleLogout;
   window.switchTab=switchTab; window.handleAddTodo=handleAddTodo;
   window.shiftWeek=shiftWeek; window.addLine=addLine; window.removeLine=removeLine;
-  window.toggleItem=toggleItem;
+  window.toggleItem=toggleItem; window.deleteTodo=deleteTodo;
 
   document.getElementById('login-password').addEventListener('keydown', e=>e.key==='Enter'&&handleLogin());
   document.getElementById('signup-password').addEventListener('keydown',e=>e.key==='Enter'&&handleSignup());
