@@ -343,6 +343,87 @@
     .progress-bar-fill { height:100%; background:var(--green); border-radius:4px; transition:width .4s ease; }
     .progress-label { font-size:0.7rem; color:var(--muted); margin-top:4px; text-align:right; }
 
+
+    /* ══ STATS PANEL ════════════════════════════════════════ */
+    .stats-panel {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 12px; margin-bottom: 24px;
+    }
+    .stat-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 16px 12px;
+      text-align: center; box-shadow: var(--shadow);
+    }
+    .stat-icon { font-size: 1.4rem; margin-bottom: 6px; }
+    .stat-value {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.6rem; color: var(--accent); line-height: 1;
+    }
+    .stat-label { font-size: 0.7rem; color: var(--muted); margin-top: 4px; text-transform: uppercase; letter-spacing: .06em; font-weight: 600; }
+
+    /* ══ LEADERBOARD ════════════════════════════════════════ */
+    .leaderboard-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); box-shadow: var(--shadow);
+      padding: 20px; margin-bottom: 24px;
+    }
+    .leaderboard-title {
+      font-family: 'DM Serif Display', serif; font-size: 1.1rem;
+      margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
+    }
+    .leaderboard-row {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 0; border-bottom: 1px solid var(--border);
+    }
+    .leaderboard-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .lb-rank {
+      width: 24px; text-align: center; font-weight: 700;
+      font-size: 0.85rem; color: var(--muted); flex-shrink: 0;
+    }
+    .lb-rank.gold   { color: #d4a017; font-size: 1rem; }
+    .lb-rank.silver { color: #9BA4B5; font-size: 1rem; }
+    .lb-rank.bronze { color: #CD7F32; font-size: 1rem; }
+    .lb-avatar {
+      width: 34px; height: 34px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.75rem; font-weight: 700; color: #fff; flex-shrink: 0; overflow: hidden;
+    }
+    .lb-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+    .lb-name  { flex: 1; font-size: 0.9rem; font-weight: 600; }
+    .lb-score {
+      font-size: 0.8rem; font-weight: 700;
+      color: var(--accent); background: var(--accent-lt);
+      padding: 3px 10px; border-radius: 20px; flex-shrink: 0;
+    }
+    .lb-you { font-size: 0.65rem; color: var(--accent); font-weight: 600; margin-left: 4px; }
+
+    /* ══ ADMIN PANEL ════════════════════════════════════════ */
+    .admin-badge {
+      font-size: 0.65rem; font-weight: 700; color: #fff;
+      background: #805ad5; padding: 2px 7px; border-radius: 20px;
+      margin-left: 6px; letter-spacing: .04em; vertical-align: middle;
+    }
+    .admin-delete-btn {
+      background: none; border: none; cursor: pointer;
+      font-size: 0.95rem; padding: 4px 6px; border-radius: 8px;
+      opacity: 0.5; transition: opacity .2s, background .2s; margin-left: 4px;
+    }
+    .admin-delete-btn:hover { opacity: 1; background: #fff0f0; }
+
+    /* Tabs for sections */
+    .section-tabs {
+      display: flex; gap: 0; margin-bottom: 20px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 4px; box-shadow: var(--shadow);
+    }
+    .section-tab {
+      flex: 1; padding: 9px 6px; border: none; background: transparent;
+      border-radius: 9px; font-family: inherit; font-size: 0.82rem;
+      font-weight: 500; color: var(--muted); cursor: pointer; transition: all .2s;
+      text-align: center;
+    }
+    .section-tab.active { background: var(--accent); color: #fff; }
+
     @keyframes fadeUp  { from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);} }
     @keyframes slideIn { from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);} }
     @keyframes spin    { to{transform:rotate(360deg);} }
@@ -456,7 +537,10 @@
           <div class="topbar-email" id="topbar-email"></div>
         </div>
       </div>
-      <button class="logout-btn" onclick="handleLogout()">Logout</button>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <button class="logout-btn" id="admin-btn" onclick="toggleAdminPanel()" style="display:none;">⚙️ Admin</button>
+        <button class="logout-btn" onclick="handleLogout()">Logout</button>
+      </div>
     </div>
 
     <!-- Header -->
@@ -464,6 +548,13 @@
       <h1>Public <span>Todo</span> Board</h1>
       <p>Add todos for any day — everyone sees them instantly.</p>
     </header>
+
+    <!-- Admin Panel (hidden by default) -->
+    <div id="admin-panel" style="display:none; background:#fdf4ff; border:1.5px solid #d8b4fe; border-radius:var(--radius); padding:18px 20px; margin-bottom:24px;">
+      <div style="font-family:'DM Serif Display',serif; font-size:1.05rem; margin-bottom:12px; color:#6d28d9;">⚙️ Admin Panel <span class="admin-badge">ADMIN</span></div>
+      <p style="font-size:0.82rem; color:#7c3aed; margin-bottom:12px;">As admin, you can delete any todo from the list below.</p>
+      <div id="admin-todo-list" style="display:flex;flex-direction:column;gap:8px;max-height:300px;overflow-y:auto;"></div>
+    </div>
 
     <!-- Weekly Calendar -->
     <div class="calendar-card">
@@ -510,6 +601,25 @@
 
     <div id="my-todo-list" style="display:none; flex-direction:column; gap:12px;"></div>
 
+    <!-- Stats Panel -->
+    <div class="stats-panel" id="stats-panel" style="margin-top:24px;">
+      <div class="stat-card">
+        <div class="stat-icon">🔥</div>
+        <div class="stat-value" id="stat-streak">0</div>
+        <div class="stat-label">Day Streak</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">✅</div>
+        <div class="stat-value" id="stat-completion">0%</div>
+        <div class="stat-label">Completion</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🏅</div>
+        <div class="stat-value" id="stat-best-streak">0</div>
+        <div class="stat-label">Longest Streak</div>
+      </div>
+    </div>
+
     <!-- Others Todos Section -->
     <div class="list-header" style="margin-top:28px;">
       <h2>Everyone's Todos</h2>
@@ -521,7 +631,15 @@
       <p id="others-empty-msg" style="font-size:0.88rem;">No todos from others for this day yet!</p>
     </div>
 
-    <div id="others-todo-list" style="display:none; flex-direction:column; gap:12px; margin-bottom:32px;"></div>
+    <div id="others-todo-list" style="display:none; flex-direction:column; gap:12px;"></div>
+
+    <!-- Leaderboard -->
+    <div class="leaderboard-card" style="margin-top:28px;">
+      <div class="leaderboard-title">🏆 This Week's Leaderboard</div>
+      <div id="leaderboard-list">
+        <div style="text-align:center;padding:16px;color:var(--muted);font-size:0.85rem;">Loading...</div>
+      </div>
+    </div>
 
   </div>
 </div>
@@ -552,6 +670,10 @@
   const auth     = getAuth(app);
   const gProvider = new GoogleAuthProvider();
   const todosRef  = collection(db, "todos");
+
+  // ── Admin UID — replace with your own Firebase UID ────────
+  // To find your UID: Login → open browser console → type: firebase.auth().currentUser.uid
+  const ADMIN_UID = "Dj7MPvaGLxgF4Fy6LjhIVvLtzJF2";
 
   // ── State ────────────────────────────────────────────────
   let selectedDate  = todayStr();
@@ -732,6 +854,135 @@
     } catch(e){ alert('Could not delete. Please try again.'); }
   }
 
+  // ── STATS ────────────────────────────────────────────────
+  function updateStats(uid){
+    const myTodos = allTodos.filter(t => t.uid === uid);
+
+    // Best streak — longest consecutive days ever
+    let bestStreak = 0, tempStreak = 0;
+    const dateSet2 = new Set(myTodos.map(t => t.dateKey));
+    const allDates = [...dateSet2].sort();
+    for(let i=0; i<allDates.length; i++){
+      if(i===0){ tempStreak=1; }
+      else {
+        const prev = new Date(allDates[i-1]);
+        const curr = new Date(allDates[i]);
+        const diff = (curr - prev) / (1000*60*60*24);
+        tempStreak = diff === 1 ? tempStreak + 1 : 1;
+      }
+      if(tempStreak > bestStreak) bestStreak = tempStreak;
+    }
+    document.getElementById('stat-best-streak').textContent = bestStreak;
+
+    // Completion rate
+    const allItems    = myTodos.flatMap(t => t.items||[]);
+    const doneItems   = allItems.filter(it => it.done);
+    const pct = allItems.length > 0 ? Math.round((doneItems.length/allItems.length)*100) : 0;
+    document.getElementById('stat-completion').textContent = pct + '%';
+
+    // Streak — count consecutive days backwards from today
+    const dateSet = new Set(myTodos.map(t => t.dateKey));
+    let streak = 0;
+    const today = new Date();
+    for(let i=0; i<365; i++){
+      const d = new Date(today);
+      d.setDate(today.getDate() - i);
+      if(dateSet.has(dateStr(d))){ streak++; }
+      else if(i > 0){ break; }
+    }
+    document.getElementById('stat-streak').textContent = streak;
+  }
+
+  // ── LEADERBOARD ───────────────────────────────────────────
+  function updateLeaderboard(currentUid){
+    // Get start of this week (Sunday)
+    const today = new Date();
+    const startOfWeek = new Date(today);
+    startOfWeek.setDate(today.getDate() - today.getDay());
+    startOfWeek.setHours(0,0,0,0);
+
+    // Filter todos from this week
+    const weekTodos = allTodos.filter(t => {
+      if(!t.createdAt?.toDate) return false;
+      return t.createdAt.toDate() >= startOfWeek;
+    });
+
+    // Group by user and count completed items
+    const userMap = {};
+    weekTodos.forEach(t => {
+      if(!userMap[t.uid]) userMap[t.uid] = { name:t.name, photoURL:t.photoURL||null, uid:t.uid, done:0, total:0 };
+      (t.items||[]).forEach(it => {
+        userMap[t.uid].total++;
+        if(it.done) userMap[t.uid].done++;
+      });
+    });
+
+    const sorted = Object.values(userMap).sort((a,b) => b.done - a.done).slice(0,5);
+    const container = document.getElementById('leaderboard-list');
+
+    if(sorted.length === 0){
+      container.innerHTML = '<div style="text-align:center;padding:16px;color:var(--muted);font-size:0.85rem;">No activity this week yet!</div>';
+      return;
+    }
+
+    const medals = ['🥇','🥈','🥉'];
+    const rankClass = ['gold','silver','bronze'];
+    container.innerHTML = '';
+    sorted.forEach((u, i) => {
+      const isYou = u.uid === currentUid;
+      const row   = document.createElement('div');
+      row.className = 'leaderboard-row';
+      const avatarHTML = u.photoURL
+        ? `<img src="${u.photoURL}" referrerpolicy="no-referrer">`
+        : initials(u.name);
+      const avatarStyle = u.photoURL ? '' : `style="background:${colorFrom(u.name)}"`;
+      row.innerHTML = `
+        <span class="lb-rank ${rankClass[i]||''}">${medals[i]||i+1}</span>
+        <div class="lb-avatar" ${avatarStyle}>${avatarHTML}</div>
+        <span class="lb-name">${esc(u.name)}${isYou?'<span class="lb-you">YOU</span>':''}</span>
+        <span class="lb-score">${u.done} done</span>`;
+      container.appendChild(row);
+    });
+  }
+
+  // ── ADMIN PANEL ───────────────────────────────────────────
+  function toggleAdminPanel(){
+    const panel = document.getElementById('admin-panel');
+    const isHidden = panel.style.display === 'none';
+    panel.style.display = isHidden ? 'block' : 'none';
+    if(isHidden) renderAdminList();
+  }
+
+  function renderAdminList(){
+    const container = document.getElementById('admin-todo-list');
+    container.innerHTML = '';
+    if(allTodos.length === 0){
+      container.innerHTML = '<p style="color:var(--muted);font-size:0.85rem;">No todos yet.</p>';
+      return;
+    }
+    allTodos.forEach(t => {
+      const row = document.createElement('div');
+      row.style.cssText = 'display:flex;align-items:center;gap:10px;padding:8px 10px;background:white;border-radius:10px;border:1px solid #e9d8fd;';
+      const itemTexts = (t.items||[]).map(it=>it.text).join(', ');
+      row.innerHTML = `
+        <div style="flex:1;min-width:0;">
+          <span style="font-weight:600;font-size:0.82rem;">${esc(t.name)}</span>
+          <span style="font-size:0.75rem;color:var(--muted);margin-left:6px;">${formatBadge(t.dateKey||todayStr())}</span>
+          <div style="font-size:0.8rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(itemTexts)}</div>
+        </div>
+        <button class="admin-delete-btn" onclick="adminDeleteTodo('${t.id}')" title="Admin delete">🗑️</button>`;
+      container.appendChild(row);
+    });
+  }
+
+  async function adminDeleteTodo(docId){
+    if(!confirm('Admin: Delete this todo permanently?')) return;
+    try{
+      await deleteDoc(doc(db,'todos',docId));
+      renderAdminList();
+    } catch(e){ alert('Could not delete.'); }
+  }
+
   // ── RENDER LIST ──────────────────────────────────────────
   function renderList(){
     const uid = auth.currentUser?.uid;
@@ -816,6 +1067,14 @@
         allTodos = snap.docs.map(d=>({ id:d.id, ...d.data() }));
         renderCalendar();
         renderList();
+        updateStats(user.uid);
+        updateLeaderboard(user.uid);
+        if(user.uid === ADMIN_UID){
+          document.getElementById('admin-btn').style.display='flex';
+        }
+        if(document.getElementById('admin-panel').style.display !== 'none'){
+          renderAdminList();
+        }
       });
     } else {
       document.getElementById('auth-screen').style.display='flex';
@@ -915,7 +1174,7 @@
   window.handleSignup=handleSignup; window.handleLogout=handleLogout;
   window.switchTab=switchTab; window.handleAddTodo=handleAddTodo;
   window.shiftWeek=shiftWeek; window.addLine=addLine; window.removeLine=removeLine;
-  window.toggleItem=toggleItem; window.deleteTodo=deleteTodo;
+  window.toggleItem=toggleItem; window.deleteTodo=deleteTodo; window.toggleAdminPanel=toggleAdminPanel; window.adminDeleteTodo=adminDeleteTodo;
 
   document.getElementById('login-password').addEventListener('keydown', e=>e.key==='Enter'&&handleLogin());
   document.getElementById('signup-password').addEventListener('keydown',e=>e.key==='Enter'&&handleSignup());
