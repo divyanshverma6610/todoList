@@ -29,16 +29,7 @@
       min-height: 100vh;
     }
 
-    /* ══ AUTH SCREEN ══════════════════════════════════════ */
-    #auth-screen {
-      min-height: 100vh;
-      display: none; /* FIX 1: Hidden by default, shown only if needed */
-      align-items: center;
-      justify-content: center;
-      padding: 24px 16px;
-    }
-
-    /* FIX 1: Initial blank loading screen */
+    /* ══ INIT SCREEN ══════════════════════════════════════ */
     #init-screen {
       min-height: 100vh;
       display: flex;
@@ -69,9 +60,7 @@
       letter-spacing: -0.02em;
     }
     .init-logo h1 span { color: var(--accent); font-style: italic; }
-    .init-dots {
-      display: flex; gap: 6px; margin-top: 4px;
-    }
+    .init-dots { display: flex; gap: 6px; margin-top: 4px; }
     .init-dots span {
       width: 7px; height: 7px;
       background: var(--accent);
@@ -80,6 +69,15 @@
     }
     .init-dots span:nth-child(2) { animation-delay: .2s; }
     .init-dots span:nth-child(3) { animation-delay: .4s; }
+
+    /* ══ AUTH SCREEN ══════════════════════════════════════ */
+    #auth-screen {
+      min-height: 100vh;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+    }
 
     .auth-card {
       background: var(--surface);
@@ -219,6 +217,7 @@
     header h1 span { color: var(--accent); font-style: italic; }
     header p { margin-top: 8px; color: var(--muted); font-size: 0.9rem; font-weight: 300; }
 
+    /* ══ ADD CARD ═════════════════════════════════════════ */
     .add-card {
       background: var(--surface); border: 1px solid var(--border);
       border-radius: var(--radius); box-shadow: var(--shadow);
@@ -237,12 +236,8 @@
       background: var(--accent-lt); color: var(--accent);
       padding: 3px 10px; border-radius: 20px;
     }
-
-    /* Todo inputs inside add-card */
     .todo-inputs { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
-    .todo-input-row {
-      display: flex; align-items: center; gap: 10px;
-    }
+    .todo-input-row { display: flex; align-items: center; gap: 10px; }
     .todo-input-bullet {
       width: 6px; height: 6px; border-radius: 50%;
       background: var(--accent); flex-shrink: 0;
@@ -289,54 +284,31 @@
     }
     .error-msg.show { display: block; }
 
-    /* FIX 2: My Todos / Others Todos sections */
+    /* ══ SECTION HEADERS ══════════════════════════════════ */
     .section-header {
       display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
     }
-    .section-header h2 {
-      font-family: 'DM Serif Display', serif; font-size: 1.15rem;
-    }
+    .section-header h2 { font-family: 'DM Serif Display', serif; font-size: 1.15rem; }
     .section-badge {
-      font-size: 0.75rem; font-weight: 600; padding: 2px 9px;
-      border-radius: 20px;
+      font-size: 0.75rem; font-weight: 600;
+      padding: 2px 9px; border-radius: 20px;
     }
-    .my-badge {
-      background: var(--accent-lt); color: var(--accent);
-    }
-    .others-badge {
-      background: #EAF0FB; color: #3A7DC5;
-    }
-    .section-showing {
-      margin-left: auto; font-size: 0.78rem; color: var(--muted);
-    }
+    .my-badge   { background: var(--accent-lt); color: var(--accent); }
+    .others-badge { background: #EAF0FB; color: #3A7DC5; }
+    .section-showing { margin-left: auto; font-size: 0.78rem; color: var(--muted); }
 
-    /* Divider between sections */
+    /* Divider between My Todos and Others */
     .section-divider {
-      display: flex; align-items: center; gap: 12px;
-      margin: 24px 0;
+      display: flex; align-items: center; gap: 12px; margin: 24px 0;
     }
-    .section-divider-line {
-      flex: 1; height: 1px; background: var(--border);
-    }
+    .section-divider-line { flex: 1; height: 1px; background: var(--border); }
     .section-divider-label {
       font-size: 0.72rem; font-weight: 600;
       letter-spacing: .08em; text-transform: uppercase;
       color: var(--muted); white-space: nowrap;
     }
 
-    /* My todos section */
-    #my-todos-section { margin-bottom: 8px; }
-    #others-todos-section { }
-
-    #empty-state { text-align: center; padding: 48px 0; color: var(--muted); }
-    #empty-state .icon { font-size: 2.5rem; margin-bottom: 10px; }
-    #empty-state p { font-size: 0.9rem; }
-
-    #my-empty-state {
-      text-align: center; padding: 20px 0 28px; color: var(--muted);
-      font-size: 0.85rem;
-    }
-
+    /* ══ SKELETON ═════════════════════════════════════════ */
     #loading-state { display: flex; flex-direction: column; gap: 12px; }
     .skeleton {
       background: var(--surface); border: 1px solid var(--border);
@@ -358,10 +330,16 @@
     .skeleton-line.long  { width: 88%; }
     .skeleton-line.tiny  { width: 35%; margin-bottom: 0; }
 
-    #todo-list        { display: flex; flex-direction: column; gap: 12px; }
+    /* ══ EMPTY STATE ══════════════════════════════════════ */
+    #empty-state { text-align: center; padding: 48px 0; color: var(--muted); }
+    #empty-state .icon { font-size: 2.5rem; margin-bottom: 10px; }
+    #empty-state p { font-size: 0.9rem; }
+
+    /* ══ TODO LISTS ═══════════════════════════════════════ */
     #my-todo-list     { display: flex; flex-direction: column; gap: 12px; }
     #others-todo-list { display: flex; flex-direction: column; gap: 12px; }
 
+    /* ══ TODO CARD ════════════════════════════════════════ */
     .todo-card {
       background: var(--surface); border: 1px solid var(--border);
       border-radius: var(--radius); padding: 18px 20px;
@@ -369,10 +347,7 @@
       box-shadow: var(--shadow);
       animation: slideIn .28s cubic-bezier(.22,1,.36,1);
     }
-    /* Subtle left border for my todos */
-    .todo-card.mine {
-      border-left: 3px solid var(--accent);
-    }
+    .todo-card.mine { border-left: 3px solid var(--accent); }
 
     .avatar {
       width: 40px; height: 40px; border-radius: 50%;
@@ -380,7 +355,10 @@
       font-size: 0.8rem; font-weight: 700; flex-shrink: 0; color: #fff;
     }
     .todo-body { flex: 1; min-width: 0; }
-    .todo-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 5px; }
+    .todo-meta {
+      display: flex; align-items: center; gap: 8px;
+      flex-wrap: wrap; margin-bottom: 10px;
+    }
     .todo-name { font-weight: 600; font-size: 0.9rem; }
     .todo-time { font-size: 0.75rem; color: var(--muted); }
     .todo-date-badge {
@@ -389,31 +367,67 @@
       background: var(--accent-lt); color: var(--accent);
       padding: 2px 8px; border-radius: 12px;
     }
-    .todo-text { font-size: 0.95rem; line-height: 1.5; word-break: break-word; }
-    .todo-items { list-style: none; padding: 0; margin-top: 4px; }
-    .todo-items li {
-      display: flex; align-items: center; gap: 8px;
-      font-size: 0.92rem; line-height: 1.5; padding: 3px 0;
-      color: var(--text);
-    }
-    .todo-items li::before {
-      content: ''; width: 5px; height: 5px; border-radius: 50%;
-      background: var(--muted); flex-shrink: 0;
-    }
     .you-badge {
       font-size: 0.65rem; font-weight: 700;
       background: var(--accent); color: #fff;
-      padding: 1px 6px; border-radius: 8px;
-      letter-spacing: .04em;
+      padding: 1px 6px; border-radius: 8px; letter-spacing: .04em;
     }
 
-    @keyframes fadeUp    { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
-    @keyframes slideIn   { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
-    @keyframes spin      { to { transform: rotate(360deg); } }
-    @keyframes shimmer   { to { background-position: -200% 0; } }
+    /* ══ CHECKBOX ITEMS ═══════════════════════════════════ */
+    .todo-items-wrap {
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .todo-item-row {
+      display: flex; align-items: center; gap: 10px;
+      padding: 3px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .todo-item-row:last-child { border-bottom: none; }
+
+    .todo-check {
+      appearance: none; -webkit-appearance: none;
+      width: 18px; height: 18px;
+      border: 1.5px solid var(--border);
+      border-radius: 5px; cursor: pointer;
+      flex-shrink: 0; background: var(--bg);
+      transition: all .2s; position: relative;
+    }
+    .todo-check:hover  { border-color: var(--accent); }
+    .todo-check:checked {
+      background: var(--accent); border-color: var(--accent);
+    }
+    .todo-check:checked::after {
+      content: '';
+      position: absolute;
+      left: 4px; top: 1px;
+      width: 6px; height: 10px;
+      border: 2px solid #fff;
+      border-top: none; border-left: none;
+      transform: rotate(45deg);
+    }
+    .todo-item-label {
+      font-size: 0.92rem; line-height: 1.5;
+      cursor: pointer; color: var(--text);
+      transition: color .2s, text-decoration .2s;
+      flex: 1;
+    }
+    .todo-item-label.done {
+      text-decoration: line-through;
+      color: var(--muted);
+    }
+    .todo-done-count {
+      font-size: 0.75rem; color: var(--muted);
+      margin-top: 10px; text-align: right;
+    }
+
+    /* ══ ANIMATIONS ═══════════════════════════════════════ */
+    @keyframes fadeUp  { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes slideIn { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes spin    { to { transform: rotate(360deg); } }
+    @keyframes shimmer { to { background-position: -200% 0; } }
     @keyframes dotBounce {
       0%, 80%, 100% { transform: scale(0.6); opacity: .4; }
-      40%           { transform: scale(1);   opacity: 1; }
+      40%           { transform: scale(1);   opacity: 1;  }
     }
 
     @media (max-width: 480px) {
@@ -426,7 +440,7 @@
 </head>
 <body>
 
-<!-- ══ INIT SCREEN (shown on first load) ═════════════════════ -->
+<!-- ══ INIT SCREEN ════════════════════════════════════════════ -->
 <div id="init-screen">
   <div class="init-logo">
     <div class="init-logo-icon">📋</div>
@@ -440,7 +454,6 @@
 <!-- ══ AUTH SCREEN ════════════════════════════════════════════ -->
 <div id="auth-screen">
   <div class="auth-card">
-
     <div class="auth-logo">
       <div class="logo-icon">📋</div>
       <h1>Public <span>Todo</span> Board</h1>
@@ -491,7 +504,6 @@
       </button>
       <p class="auth-divider">Already have an account? <a href="#" onclick="switchTab('login')">Login</a></p>
     </div>
-
   </div>
 </div>
 
@@ -499,6 +511,7 @@
 <div id="app-screen">
   <div class="container">
 
+    <!-- Topbar -->
     <div class="topbar">
       <div class="topbar-user">
         <div class="topbar-avatar" id="topbar-avatar"></div>
@@ -510,6 +523,7 @@
       <button class="logout-btn" onclick="handleLogout()">Logout</button>
     </div>
 
+    <!-- Header -->
     <header>
       <h1>Public <span>Todo</span> Board</h1>
       <p>A shared space for everyone's tasks. Add todos for the day.</p>
@@ -535,7 +549,7 @@
       </button>
     </div>
 
-    <!-- MY TODOS SECTION -->
+    <!-- MY TODOS -->
     <div id="my-todos-section" style="display:none;">
       <div class="section-header">
         <h2>My Todos</h2>
@@ -545,14 +559,14 @@
       <div id="my-todo-list"></div>
     </div>
 
-    <!-- Divider shown only when both sections have content -->
+    <!-- Divider -->
     <div class="section-divider" id="section-divider" style="display:none;">
       <div class="section-divider-line"></div>
       <span class="section-divider-label">Everyone's Todos</span>
       <div class="section-divider-line"></div>
     </div>
 
-    <!-- OTHERS TODOS SECTION -->
+    <!-- OTHERS TODOS -->
     <div id="others-todos-section">
       <div class="section-header">
         <h2>Todos</h2>
@@ -616,27 +630,27 @@
   const todosRef = collection(db, "todos");
 
   // ── DOM refs ───────────────────────────────
-  const initScreen       = document.getElementById("init-screen");
-  const authScreen       = document.getElementById("auth-screen");
-  const appScreen        = document.getElementById("app-screen");
-  const authError        = document.getElementById("auth-error");
-  const errorMsg         = document.getElementById("error-msg");
-  const addBtn           = document.getElementById("add-btn");
-  const loadingState     = document.getElementById("loading-state");
-  const emptyState       = document.getElementById("empty-state");
-  const myTodosSection   = document.getElementById("my-todos-section");
-  const sectionDivider   = document.getElementById("section-divider");
-  const myTodoList       = document.getElementById("my-todo-list");
-  const othersTodoList   = document.getElementById("others-todo-list");
-  const countBadge       = document.getElementById("count-badge");
-  const myCountBadge     = document.getElementById("my-count-badge");
+  const initScreen     = document.getElementById("init-screen");
+  const authScreen     = document.getElementById("auth-screen");
+  const appScreen      = document.getElementById("app-screen");
+  const authError      = document.getElementById("auth-error");
+  const errorMsg       = document.getElementById("error-msg");
+  const addBtn         = document.getElementById("add-btn");
+  const loadingState   = document.getElementById("loading-state");
+  const emptyState     = document.getElementById("empty-state");
+  const myTodosSection = document.getElementById("my-todos-section");
+  const sectionDivider = document.getElementById("section-divider");
+  const myTodoList     = document.getElementById("my-todo-list");
+  const othersTodoList = document.getElementById("others-todo-list");
+  const countBadge     = document.getElementById("count-badge");
+  const myCountBadge   = document.getElementById("my-count-badge");
 
   // ── Date display ───────────────────────────
   function formatDate(d) {
-    return d.toLocaleDateString("en-GB",{ weekday:"short", day:"numeric", month:"short" });
+    return d.toLocaleDateString("en-GB", { weekday:"short", day:"numeric", month:"short" });
   }
   const todayStr = formatDate(new Date());
-  document.getElementById("today-date").textContent    = todayStr;
+  document.getElementById("today-date").textContent      = todayStr;
   document.getElementById("my-section-date").textContent = `Showing: ${todayStr}`;
   document.getElementById("section-date").textContent    = `Showing: ${todayStr}`;
 
@@ -673,8 +687,7 @@
   let currentUid = null;
 
   onAuthStateChanged(auth, user => {
-
-    // FIX 1: Hide init screen once Firebase auth is resolved
+    // Hide init screen once Firebase resolves auth
     initScreen.style.display = "none";
 
     if (user) {
@@ -693,20 +706,17 @@
       firstLoad = true;
       const q = query(todosRef, orderBy("createdAt", "desc"));
       unsubTodos = onSnapshot(q, snap => {
-        if (firstLoad) {
-          loadingState.style.display = "none";
-          firstLoad = false;
-        }
+        if (firstLoad) { loadingState.style.display = "none"; firstLoad = false; }
 
-        // FIX 2: Separate my todos from others
+        // Split into my todos and others
         const myDocs     = snap.docs.filter(d => d.data().uid === currentUid);
         const othersDocs = snap.docs.filter(d => d.data().uid !== currentUid);
 
-        // Update badges
+        // Badges
         myCountBadge.textContent = myDocs.length;
         countBadge.textContent   = othersDocs.length;
 
-        // Render MY todos
+        // My todos section
         if (myDocs.length > 0) {
           myTodosSection.style.display = "block";
           myTodoList.innerHTML = "";
@@ -715,20 +725,20 @@
           myTodosSection.style.display = "none";
         }
 
-        // Show divider only when both have content
+        // Divider
         sectionDivider.style.display =
           (myDocs.length > 0 && othersDocs.length > 0) ? "flex" : "none";
 
-        // Render OTHERS todos
+        // Others todos section
         if (othersDocs.length === 0 && myDocs.length === 0) {
-          emptyState.style.display      = "block";
-          othersTodoList.style.display  = "none";
+          emptyState.style.display     = "block";
+          othersTodoList.style.display = "none";
         } else if (othersDocs.length === 0) {
-          emptyState.style.display      = "none";
-          othersTodoList.style.display  = "none";
+          emptyState.style.display     = "none";
+          othersTodoList.style.display = "none";
         } else {
-          emptyState.style.display      = "none";
-          othersTodoList.style.display  = "flex";
+          emptyState.style.display     = "none";
+          othersTodoList.style.display = "flex";
           othersTodoList.innerHTML = "";
           othersDocs.forEach(d => othersTodoList.appendChild(buildCard(d.id, d.data(), false)));
         }
@@ -736,7 +746,6 @@
 
     } else {
       currentUid = null;
-      // FIX 1: Show auth screen only after Firebase confirms no user
       authScreen.style.display = "flex";
       appScreen.style.display  = "none";
       if (unsubTodos) { unsubTodos(); unsubTodos = null; }
@@ -758,13 +767,21 @@
     card.className = "todo-card" + (isMine ? " mine" : "");
     const col = colorFrom(name);
 
-    // Support both single text and multiple texts array
-    let itemsHTML = "";
+    // Support old single `text` field AND new `texts` array
+    let allItems = [];
     if (Array.isArray(texts) && texts.length > 0) {
-      itemsHTML = `<ul class="todo-items">${texts.map(t => `<li>${esc(t)}</li>`).join("")}</ul>`;
+      allItems = texts;
     } else if (text) {
-      itemsHTML = `<ul class="todo-items"><li>${esc(text)}</li></ul>`;
+      allItems = [text];
     }
+
+    // Build checkbox rows
+    const itemsHTML = allItems.map((t, i) => `
+      <div class="todo-item-row">
+        <input type="checkbox" class="todo-check" id="chk-${id}-${i}" />
+        <label for="chk-${id}-${i}" class="todo-item-label">${esc(t)}</label>
+      </div>
+    `).join("");
 
     card.innerHTML = `
       <div class="avatar" style="background:${col}">${initials(name)}</div>
@@ -775,11 +792,25 @@
           <span class="todo-time" data-ts="${date?.toISOString()??""}">${timeAgo(date)}</span>
           <span class="todo-date-badge">${date ? formatDate(date) : todayStr}</span>
         </div>
-        ${itemsHTML}
+        <div class="todo-items-wrap">${itemsHTML}</div>
+        <div class="todo-done-count">0/${allItems.length} done</div>
       </div>`;
+
+    // Checkbox interactivity
+    card.querySelectorAll(".todo-check").forEach(chk => {
+      chk.addEventListener("change", () => {
+        const label = chk.nextElementSibling;
+        label.classList.toggle("done", chk.checked);
+        const all  = card.querySelectorAll(".todo-check");
+        const done = card.querySelectorAll(".todo-check:checked").length;
+        card.querySelector(".todo-done-count").textContent = `${done}/${all.length} done`;
+      });
+    });
+
     return card;
   }
 
+  // Update relative times every 30s
   setInterval(() => {
     document.querySelectorAll(".todo-time[data-ts]").forEach(el => {
       el.textContent = el.dataset.ts ? timeAgo(new Date(el.dataset.ts)) : "just now";
@@ -815,12 +846,12 @@
       const name = user.displayName || user.email.split("@")[0];
       await addDoc(todosRef, {
         name,
-        texts,                        // store as array
-        text: texts[0],               // keep for backward compat
+        texts,          // array of todo items
+        text: texts[0], // keep for backward compatibility with old docs
         createdAt: serverTimestamp(),
         uid: user.uid
       });
-      // Clear all inputs, keep just one row
+      // Reset input area to single empty row
       const container = document.getElementById("todo-inputs");
       container.innerHTML = `
         <div class="todo-input-row">
@@ -898,13 +929,15 @@
   window.handleAddTodo = handleAddTodo;
   window.addInputRow   = addInputRow;
 
-  // Enter key
+  // Enter key support
   document.getElementById("login-password").addEventListener("keydown",  e => e.key==="Enter" && handleLogin());
   document.getElementById("signup-password").addEventListener("keydown", e => e.key==="Enter" && handleSignup());
   document.getElementById("todo-inputs").addEventListener("keydown", e => {
     if (e.key === "Enter") handleAddTodo();
   });
-  document.getElementById("todo-inputs").addEventListener("input", () => errorMsg.classList.remove("show"));
+  document.getElementById("todo-inputs").addEventListener("input", () => {
+    errorMsg.classList.remove("show");
+  });
 </script>
 
 </body>
