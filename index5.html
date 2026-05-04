@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Public Todo Board</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg:        #F5F0EB;
+      --surface:   #FFFDF9;
+      --border:    #E8E0D5;
+      --accent:    #C5603A;
+      --accent-lt: #F2E4DC;
+      --text:      #2B2217;
+      --muted:     #9B8E84;
+      --shadow:    0 2px 12px rgba(43,34,23,.07);
+      --radius:    16px;
+      --danger:    #e53e3e;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ══ AUTH SCREEN ══════════════════════════════════════ */
+    #auth-screen {
+      min-height: 100vh;
+      display: none; /* FIX 1: Hidden by default, shown only if needed */
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+    }
+
+    /* FIX 1: Initial blank loading screen */
+    #init-screen {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg);
+    }
+    .init-logo {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      animation: fadeUp .4s cubic-bezier(.22,1,.36,1);
+    }
+    .init-logo-icon {
+      width: 60px; height: 60px;
+      background: var(--accent);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      box-shadow: 0 4px 20px rgba(197,96,58,.3);
+    }
+    .init-logo h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.8rem;
+      letter-spacing: -0.02em;
+    }
+    .init-logo h1 span { color: var(--accent); font-style: italic; }
+    .init-dots {
+      display: flex; gap: 6px; margin-top: 4px;
+    }
+    .init-dots span {
+      width: 7px; height: 7px;
+      background: var(--accent);
+      border-radius: 50%;
+      animation: dotBounce 1.2s infinite ease-in-out;
+    }
+    .init-dots span:nth-child(2) { animation-delay: .2s; }
+    .init-dots span:nth-child(3) { animation-delay: .4s; }
+
+    .auth-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      box-shadow: 0 8px 40px rgba(43,34,23,.12);
+      padding: 40px 36px 36px;
+      width: 100%;
+      max-width: 420px;
+      animation: fadeUp .4s cubic-bezier(.22,1,.36,1);
+    }
+
+    .auth-logo { text-align: center; margin-bottom: 28px; }
+    .auth-logo .logo-icon {
+      width: 52px; height: 52px;
+      background: var(--accent);
+      border-radius: 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      margin-bottom: 12px;
+    }
+    .auth-logo h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.6rem;
+      letter-spacing: -0.02em;
+    }
+    .auth-logo h1 span { color: var(--accent); font-style: italic; }
+    .auth-logo p { font-size: 0.85rem; color: var(--muted); margin-top: 4px; }
+
+    .auth-tabs {
+      display: flex;
+      background: var(--bg);
+      border-radius: 10px;
+      padding: 4px;
+      margin-bottom: 24px;
+    }
+    .auth-tab {
+      flex: 1; padding: 9px; border: none;
+      background: transparent; border-radius: 8px;
+      font-family: inherit; font-size: 0.875rem; font-weight: 500;
+      color: var(--muted); cursor: pointer; transition: all .2s;
+    }
+    .auth-tab.active {
+      background: var(--surface); color: var(--text);
+      box-shadow: 0 1px 6px rgba(43,34,23,.1);
+    }
+
+    .auth-form { display: flex; flex-direction: column; gap: 14px; }
+
+    .field-group { display: flex; flex-direction: column; gap: 6px; }
+    .field-group label {
+      font-size: 0.72rem; font-weight: 600;
+      letter-spacing: .08em; text-transform: uppercase; color: var(--muted);
+    }
+    .field-group input {
+      width: 100%;
+      border: 1.5px solid var(--border);
+      border-radius: 10px; padding: 11px 14px;
+      font-family: inherit; font-size: 0.95rem;
+      color: var(--text); background: var(--bg);
+      outline: none; transition: border-color .2s, box-shadow .2s;
+    }
+    .field-group input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-lt);
+    }
+    .field-group input::placeholder { color: var(--muted); }
+
+    .auth-btn {
+      width: 100%; padding: 13px;
+      background: var(--accent); color: #fff;
+      font-family: inherit; font-size: 0.95rem; font-weight: 600;
+      border: none; border-radius: 10px; cursor: pointer;
+      transition: background .2s, transform .12s, box-shadow .2s;
+      margin-top: 4px;
+    }
+    .auth-btn:hover { background: #b0532e; box-shadow: 0 4px 14px rgba(197,96,58,.35); }
+    .auth-btn:active { transform: scale(.98); }
+    .auth-btn:disabled { background: var(--muted); cursor: not-allowed; box-shadow: none; }
+    .auth-btn .spinner {
+      display: none; width: 16px; height: 16px;
+      border: 2px solid rgba(255,255,255,.4); border-top-color: #fff;
+      border-radius: 50%; animation: spin .6s linear infinite; margin: 0 auto;
+    }
+    .auth-btn.loading .btn-text { display: none; }
+    .auth-btn.loading .spinner  { display: block; }
+
+    .auth-error {
+      display: none;
+      background: #fff5f5; border: 1px solid #fed7d7;
+      color: var(--danger); font-size: 0.82rem;
+      padding: 10px 14px; border-radius: 8px; text-align: center;
+    }
+    .auth-error.show { display: block; }
+
+    .auth-divider { text-align: center; font-size: 0.78rem; color: var(--muted); margin-top: 4px; }
+    .auth-divider a { color: var(--accent); text-decoration: none; font-weight: 600; }
+
+    /* ══ APP SCREEN ═══════════════════════════════════════ */
+    #app-screen { display: none; padding: 40px 16px 80px; }
+    .container  { max-width: 620px; margin: 0 auto; }
+
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 32px; padding: 10px 16px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; box-shadow: var(--shadow);
+    }
+    .topbar-user { display: flex; align-items: center; gap: 10px; }
+    .topbar-avatar {
+      width: 32px; height: 32px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.72rem; font-weight: 700; color: #fff; flex-shrink: 0;
+    }
+    .topbar-info { display: flex; flex-direction: column; }
+    .topbar-name  { font-size: 0.88rem; font-weight: 600; color: var(--text); }
+    .topbar-email {
+      font-size: 0.75rem; color: var(--muted);
+      max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .logout-btn {
+      font-size: 0.8rem; font-weight: 600; color: var(--muted);
+      background: none; border: 1px solid var(--border);
+      border-radius: 8px; padding: 5px 12px; cursor: pointer;
+      font-family: inherit; transition: all .2s;
+    }
+    .logout-btn:hover { color: var(--accent); border-color: var(--accent); }
+
+    header { text-align: center; margin-bottom: 40px; }
+    header h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(2rem, 6vw, 3rem);
+      letter-spacing: -0.02em; line-height: 1.1;
+    }
+    header h1 span { color: var(--accent); font-style: italic; }
+    header p { margin-top: 8px; color: var(--muted); font-size: 0.9rem; font-weight: 300; }
+
+    .add-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); box-shadow: var(--shadow);
+      padding: 24px 24px 20px; margin-bottom: 32px;
+    }
+    .add-card-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    .add-card-header label {
+      font-size: 0.72rem; font-weight: 600;
+      letter-spacing: .08em; text-transform: uppercase; color: var(--muted);
+    }
+    .add-card-date {
+      font-size: 0.75rem; font-weight: 600;
+      background: var(--accent-lt); color: var(--accent);
+      padding: 3px 10px; border-radius: 20px;
+    }
+
+    /* Todo inputs inside add-card */
+    .todo-inputs { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+    .todo-input-row {
+      display: flex; align-items: center; gap: 10px;
+    }
+    .todo-input-bullet {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent); flex-shrink: 0;
+    }
+    .add-card input {
+      width: 100%; border: 1.5px solid var(--border);
+      border-radius: 10px; padding: 11px 14px;
+      font-family: inherit; font-size: 0.95rem;
+      color: var(--text); background: var(--bg);
+      outline: none; transition: border-color .2s, box-shadow .2s;
+    }
+    .add-card input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-lt); }
+    .add-card input::placeholder { color: var(--muted); }
+
+    .add-another-btn {
+      width: 100%; padding: 10px;
+      background: none; border: 1.5px dashed var(--border);
+      border-radius: 10px; color: var(--muted);
+      font-family: inherit; font-size: 0.85rem; font-weight: 500;
+      cursor: pointer; transition: all .2s; margin-bottom: 14px;
+    }
+    .add-another-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-lt); }
+
+    #add-btn {
+      width: 100%; padding: 13px; background: var(--accent); color: #fff;
+      font-family: inherit; font-size: 0.95rem; font-weight: 600;
+      border: none; border-radius: 10px; cursor: pointer;
+      transition: background .2s, transform .12s, box-shadow .2s;
+    }
+    #add-btn:hover { background: #b0532e; box-shadow: 0 4px 14px rgba(197,96,58,.35); }
+    #add-btn:active { transform: scale(.98); }
+    #add-btn:disabled { background: var(--muted); cursor: not-allowed; box-shadow: none; }
+    #add-btn .spinner {
+      display: none; width: 16px; height: 16px;
+      border: 2px solid rgba(255,255,255,.4); border-top-color: #fff;
+      border-radius: 50%; animation: spin .6s linear infinite; margin: 0 auto;
+    }
+    #add-btn.loading .btn-text { display: none; }
+    #add-btn.loading .spinner  { display: block; }
+
+    .error-msg {
+      display: none; font-size: 0.8rem; color: var(--accent);
+      margin-top: -4px; margin-bottom: 10px; padding-left: 4px;
+    }
+    .error-msg.show { display: block; }
+
+    /* FIX 2: My Todos / Others Todos sections */
+    .section-header {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
+    }
+    .section-header h2 {
+      font-family: 'DM Serif Display', serif; font-size: 1.15rem;
+    }
+    .section-badge {
+      font-size: 0.75rem; font-weight: 600; padding: 2px 9px;
+      border-radius: 20px;
+    }
+    .my-badge {
+      background: var(--accent-lt); color: var(--accent);
+    }
+    .others-badge {
+      background: #EAF0FB; color: #3A7DC5;
+    }
+    .section-showing {
+      margin-left: auto; font-size: 0.78rem; color: var(--muted);
+    }
+
+    /* Divider between sections */
+    .section-divider {
+      display: flex; align-items: center; gap: 12px;
+      margin: 24px 0;
+    }
+    .section-divider-line {
+      flex: 1; height: 1px; background: var(--border);
+    }
+    .section-divider-label {
+      font-size: 0.72rem; font-weight: 600;
+      letter-spacing: .08em; text-transform: uppercase;
+      color: var(--muted); white-space: nowrap;
+    }
+
+    /* My todos section */
+    #my-todos-section { margin-bottom: 8px; }
+    #others-todos-section { }
+
+    #empty-state { text-align: center; padding: 48px 0; color: var(--muted); }
+    #empty-state .icon { font-size: 2.5rem; margin-bottom: 10px; }
+    #empty-state p { font-size: 0.9rem; }
+
+    #my-empty-state {
+      text-align: center; padding: 20px 0 28px; color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    #loading-state { display: flex; flex-direction: column; gap: 12px; }
+    .skeleton {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 18px 20px;
+      display: flex; align-items: flex-start; gap: 14px;
+    }
+    .skeleton-avatar {
+      width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0;
+      background: linear-gradient(90deg, var(--border) 25%, #f0ebe4 50%, var(--border) 75%);
+      background-size: 200%; animation: shimmer 1.4s infinite;
+    }
+    .skeleton-lines { flex: 1; }
+    .skeleton-line {
+      height: 10px; border-radius: 6px; margin-bottom: 8px;
+      background: linear-gradient(90deg, var(--border) 25%, #f0ebe4 50%, var(--border) 75%);
+      background-size: 200%; animation: shimmer 1.4s infinite;
+    }
+    .skeleton-line.short { width: 55%; }
+    .skeleton-line.long  { width: 88%; }
+    .skeleton-line.tiny  { width: 35%; margin-bottom: 0; }
+
+    #todo-list        { display: flex; flex-direction: column; gap: 12px; }
+    #my-todo-list     { display: flex; flex-direction: column; gap: 12px; }
+    #others-todo-list { display: flex; flex-direction: column; gap: 12px; }
+
+    .todo-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 18px 20px;
+      display: flex; align-items: flex-start; gap: 14px;
+      box-shadow: var(--shadow);
+      animation: slideIn .28s cubic-bezier(.22,1,.36,1);
+    }
+    /* Subtle left border for my todos */
+    .todo-card.mine {
+      border-left: 3px solid var(--accent);
+    }
+
+    .avatar {
+      width: 40px; height: 40px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.8rem; font-weight: 700; flex-shrink: 0; color: #fff;
+    }
+    .todo-body { flex: 1; min-width: 0; }
+    .todo-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 5px; }
+    .todo-name { font-weight: 600; font-size: 0.9rem; }
+    .todo-time { font-size: 0.75rem; color: var(--muted); }
+    .todo-date-badge {
+      margin-left: auto;
+      font-size: 0.7rem; font-weight: 600;
+      background: var(--accent-lt); color: var(--accent);
+      padding: 2px 8px; border-radius: 12px;
+    }
+    .todo-text { font-size: 0.95rem; line-height: 1.5; word-break: break-word; }
+    .todo-items { list-style: none; padding: 0; margin-top: 4px; }
+    .todo-items li {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 0.92rem; line-height: 1.5; padding: 3px 0;
+      color: var(--text);
+    }
+    .todo-items li::before {
+      content: ''; width: 5px; height: 5px; border-radius: 50%;
+      background: var(--muted); flex-shrink: 0;
+    }
+    .you-badge {
+      font-size: 0.65rem; font-weight: 700;
+      background: var(--accent); color: #fff;
+      padding: 1px 6px; border-radius: 8px;
+      letter-spacing: .04em;
+    }
+
+    @keyframes fadeUp    { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes slideIn   { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes spin      { to { transform: rotate(360deg); } }
+    @keyframes shimmer   { to { background-position: -200% 0; } }
+    @keyframes dotBounce {
+      0%, 80%, 100% { transform: scale(0.6); opacity: .4; }
+      40%           { transform: scale(1);   opacity: 1; }
+    }
+
+    @media (max-width: 480px) {
+      .auth-card { padding: 28px 20px 24px; }
+      .add-card  { padding: 18px 16px 16px; }
+      .todo-card { padding: 14px 16px; }
+      .topbar-email { max-width: 120px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ INIT SCREEN (shown on first load) ═════════════════════ -->
+<div id="init-screen">
+  <div class="init-logo">
+    <div class="init-logo-icon">📋</div>
+    <h1>Public <span>Todo</span> Board</h1>
+    <div class="init-dots">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</div>
+
+<!-- ══ AUTH SCREEN ════════════════════════════════════════════ -->
+<div id="auth-screen">
+  <div class="auth-card">
+
+    <div class="auth-logo">
+      <div class="logo-icon">📋</div>
+      <h1>Public <span>Todo</span> Board</h1>
+      <p>Sign in to add todos visible to everyone</p>
+    </div>
+
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tab-login"  onclick="switchTab('login')">Login</button>
+      <button class="auth-tab"        id="tab-signup" onclick="switchTab('signup')">Sign Up</button>
+    </div>
+
+    <div class="auth-error" id="auth-error"></div>
+
+    <!-- Login -->
+    <div class="auth-form" id="login-form">
+      <div class="field-group">
+        <label for="login-email">Email</label>
+        <input id="login-email" type="email" placeholder="you@example.com" autocomplete="email" />
+      </div>
+      <div class="field-group">
+        <label for="login-password">Password</label>
+        <input id="login-password" type="password" placeholder="••••••••" autocomplete="current-password" />
+      </div>
+      <button class="auth-btn" id="login-btn" onclick="handleLogin()">
+        <span class="btn-text">Login</span>
+        <span class="spinner"></span>
+      </button>
+      <p class="auth-divider">No account? <a href="#" onclick="switchTab('signup')">Sign up free</a></p>
+    </div>
+
+    <!-- Signup -->
+    <div class="auth-form" id="signup-form" style="display:none;">
+      <div class="field-group">
+        <label for="signup-name">Your Name</label>
+        <input id="signup-name" type="text" placeholder="e.g. Alex" maxlength="40" autocomplete="name" />
+      </div>
+      <div class="field-group">
+        <label for="signup-email">Email</label>
+        <input id="signup-email" type="email" placeholder="you@example.com" autocomplete="email" />
+      </div>
+      <div class="field-group">
+        <label for="signup-password">Password</label>
+        <input id="signup-password" type="password" placeholder="Min. 6 characters" autocomplete="new-password" />
+      </div>
+      <button class="auth-btn" id="signup-btn" onclick="handleSignup()">
+        <span class="btn-text">Create Account</span>
+        <span class="spinner"></span>
+      </button>
+      <p class="auth-divider">Already have an account? <a href="#" onclick="switchTab('login')">Login</a></p>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══ APP SCREEN ═════════════════════════════════════════════ -->
+<div id="app-screen">
+  <div class="container">
+
+    <div class="topbar">
+      <div class="topbar-user">
+        <div class="topbar-avatar" id="topbar-avatar"></div>
+        <div class="topbar-info">
+          <span class="topbar-name"  id="topbar-name"></span>
+          <span class="topbar-email" id="topbar-email"></span>
+        </div>
+      </div>
+      <button class="logout-btn" onclick="handleLogout()">Logout</button>
+    </div>
+
+    <header>
+      <h1>Public <span>Todo</span> Board</h1>
+      <p>A shared space for everyone's tasks. Add todos for the day.</p>
+    </header>
+
+    <!-- Add Card -->
+    <div class="add-card">
+      <div class="add-card-header">
+        <label>ADD TODOS</label>
+        <span class="add-card-date" id="today-date"></span>
+      </div>
+      <div class="todo-inputs" id="todo-inputs">
+        <div class="todo-input-row">
+          <div class="todo-input-bullet"></div>
+          <input class="todo-field" type="text" placeholder="Write a todo..." maxlength="200" autocomplete="off" />
+        </div>
+      </div>
+      <p class="error-msg" id="error-msg">Please write at least one todo.</p>
+      <button class="add-another-btn" onclick="addInputRow()">+ Add another todo</button>
+      <button id="add-btn" onclick="handleAddTodo()">
+        <span class="btn-text">Post Todos</span>
+        <span class="spinner"></span>
+      </button>
+    </div>
+
+    <!-- MY TODOS SECTION -->
+    <div id="my-todos-section" style="display:none;">
+      <div class="section-header">
+        <h2>My Todos</h2>
+        <span class="section-badge my-badge" id="my-count-badge">0</span>
+        <span class="section-showing" id="my-section-date"></span>
+      </div>
+      <div id="my-todo-list"></div>
+    </div>
+
+    <!-- Divider shown only when both sections have content -->
+    <div class="section-divider" id="section-divider" style="display:none;">
+      <div class="section-divider-line"></div>
+      <span class="section-divider-label">Everyone's Todos</span>
+      <div class="section-divider-line"></div>
+    </div>
+
+    <!-- OTHERS TODOS SECTION -->
+    <div id="others-todos-section">
+      <div class="section-header">
+        <h2>Todos</h2>
+        <span class="section-badge others-badge" id="count-badge">0</span>
+        <span class="section-showing" id="section-date"></span>
+      </div>
+
+      <div id="loading-state">
+        <div class="skeleton">
+          <div class="skeleton-avatar"></div>
+          <div class="skeleton-lines">
+            <div class="skeleton-line short"></div>
+            <div class="skeleton-line long"></div>
+            <div class="skeleton-line tiny"></div>
+          </div>
+        </div>
+        <div class="skeleton">
+          <div class="skeleton-avatar"></div>
+          <div class="skeleton-lines">
+            <div class="skeleton-line short"></div>
+            <div class="skeleton-line long"></div>
+            <div class="skeleton-line tiny"></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="empty-state" style="display:none;">
+        <div class="icon">📋</div>
+        <p>No todos yet — be the first to add one!</p>
+      </div>
+
+      <div id="others-todo-list" style="display:none;"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ── Firebase v10 SDK ── -->
+<script type="module">
+  import { initializeApp }
+    from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp }
+    from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
+           signOut, onAuthStateChanged, updateProfile }
+    from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey:            "AIzaSyC0bclkhN_utuBlbwDQKwQdDOj6qyKIqQM",
+    authDomain:        "todo-list-e14ce.firebaseapp.com",
+    projectId:         "todo-list-e14ce",
+    storageBucket:     "todo-list-e14ce.firebasestorage.app",
+    messagingSenderId: "518681964626",
+    appId:             "1:518681964626:web:90916ba9b9f2246cb16f8b",
+    measurementId:     "G-0LF5X4S72W"
+  };
+
+  const app      = initializeApp(firebaseConfig);
+  const db       = getFirestore(app);
+  const auth     = getAuth(app);
+  const todosRef = collection(db, "todos");
+
+  // ── DOM refs ───────────────────────────────
+  const initScreen       = document.getElementById("init-screen");
+  const authScreen       = document.getElementById("auth-screen");
+  const appScreen        = document.getElementById("app-screen");
+  const authError        = document.getElementById("auth-error");
+  const errorMsg         = document.getElementById("error-msg");
+  const addBtn           = document.getElementById("add-btn");
+  const loadingState     = document.getElementById("loading-state");
+  const emptyState       = document.getElementById("empty-state");
+  const myTodosSection   = document.getElementById("my-todos-section");
+  const sectionDivider   = document.getElementById("section-divider");
+  const myTodoList       = document.getElementById("my-todo-list");
+  const othersTodoList   = document.getElementById("others-todo-list");
+  const countBadge       = document.getElementById("count-badge");
+  const myCountBadge     = document.getElementById("my-count-badge");
+
+  // ── Date display ───────────────────────────
+  function formatDate(d) {
+    return d.toLocaleDateString("en-GB",{ weekday:"short", day:"numeric", month:"short" });
+  }
+  const todayStr = formatDate(new Date());
+  document.getElementById("today-date").textContent    = todayStr;
+  document.getElementById("my-section-date").textContent = `Showing: ${todayStr}`;
+  document.getElementById("section-date").textContent    = `Showing: ${todayStr}`;
+
+  // ── Helpers ────────────────────────────────
+  const COLORS = ["#C5603A","#3A7DC5","#5BA85B","#9B59B6","#E67E22","#1ABC9C","#C0392B","#2980B9"];
+  function colorFrom(s) {
+    let h = 0;
+    for (const c of s) h = c.charCodeAt(0) + ((h << 5) - h);
+    return COLORS[Math.abs(h) % COLORS.length];
+  }
+  function initials(name) {
+    const p = name.trim().split(/\s+/);
+    return (p[0][0] + (p[1]?.[0] ?? "")).toUpperCase();
+  }
+  function timeAgo(d) {
+    if (!d) return "just now";
+    const s = Math.floor((Date.now() - d.getTime()) / 1000);
+    if (s < 5)  return "just now";
+    if (s < 60) return `${s}s ago`;
+    const m = Math.floor(s / 60);
+    if (m < 60) return `${m} min${m > 1 ? "s" : ""} ago`;
+    const hr = Math.floor(m / 60);
+    if (hr < 24) return `${hr} hr${hr > 1 ? "s" : ""} ago`;
+    const dy = Math.floor(hr / 24);
+    return `${dy} day${dy > 1 ? "s" : ""} ago`;
+  }
+  function esc(s) {
+    return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+  }
+
+  // ── Auth state ─────────────────────────────
+  let unsubTodos = null;
+  let firstLoad  = true;
+  let currentUid = null;
+
+  onAuthStateChanged(auth, user => {
+
+    // FIX 1: Hide init screen once Firebase auth is resolved
+    initScreen.style.display = "none";
+
+    if (user) {
+      currentUid = user.uid;
+      authScreen.style.display = "none";
+      appScreen.style.display  = "block";
+
+      const name = user.displayName || user.email.split("@")[0];
+      document.getElementById("topbar-name").textContent  = name;
+      document.getElementById("topbar-email").textContent = user.email;
+      const av = document.getElementById("topbar-avatar");
+      av.style.background = colorFrom(name);
+      av.textContent = initials(name);
+
+      // Subscribe to todos
+      firstLoad = true;
+      const q = query(todosRef, orderBy("createdAt", "desc"));
+      unsubTodos = onSnapshot(q, snap => {
+        if (firstLoad) {
+          loadingState.style.display = "none";
+          firstLoad = false;
+        }
+
+        // FIX 2: Separate my todos from others
+        const myDocs     = snap.docs.filter(d => d.data().uid === currentUid);
+        const othersDocs = snap.docs.filter(d => d.data().uid !== currentUid);
+
+        // Update badges
+        myCountBadge.textContent = myDocs.length;
+        countBadge.textContent   = othersDocs.length;
+
+        // Render MY todos
+        if (myDocs.length > 0) {
+          myTodosSection.style.display = "block";
+          myTodoList.innerHTML = "";
+          myDocs.forEach(d => myTodoList.appendChild(buildCard(d.id, d.data(), true)));
+        } else {
+          myTodosSection.style.display = "none";
+        }
+
+        // Show divider only when both have content
+        sectionDivider.style.display =
+          (myDocs.length > 0 && othersDocs.length > 0) ? "flex" : "none";
+
+        // Render OTHERS todos
+        if (othersDocs.length === 0 && myDocs.length === 0) {
+          emptyState.style.display      = "block";
+          othersTodoList.style.display  = "none";
+        } else if (othersDocs.length === 0) {
+          emptyState.style.display      = "none";
+          othersTodoList.style.display  = "none";
+        } else {
+          emptyState.style.display      = "none";
+          othersTodoList.style.display  = "flex";
+          othersTodoList.innerHTML = "";
+          othersDocs.forEach(d => othersTodoList.appendChild(buildCard(d.id, d.data(), false)));
+        }
+      });
+
+    } else {
+      currentUid = null;
+      // FIX 1: Show auth screen only after Firebase confirms no user
+      authScreen.style.display = "flex";
+      appScreen.style.display  = "none";
+      if (unsubTodos) { unsubTodos(); unsubTodos = null; }
+      loadingState.style.display    = "flex";
+      othersTodoList.style.display  = "none";
+      myTodoList.innerHTML          = "";
+      myTodosSection.style.display  = "none";
+      sectionDivider.style.display  = "none";
+      emptyState.style.display      = "none";
+      firstLoad = true;
+    }
+  });
+
+  // ── Build card ─────────────────────────────
+  function buildCard(id, data, isMine) {
+    const { name, text, texts, createdAt } = data;
+    const date = createdAt?.toDate?.() ?? null;
+    const card = document.createElement("div");
+    card.className = "todo-card" + (isMine ? " mine" : "");
+    const col = colorFrom(name);
+
+    // Support both single text and multiple texts array
+    let itemsHTML = "";
+    if (Array.isArray(texts) && texts.length > 0) {
+      itemsHTML = `<ul class="todo-items">${texts.map(t => `<li>${esc(t)}</li>`).join("")}</ul>`;
+    } else if (text) {
+      itemsHTML = `<ul class="todo-items"><li>${esc(text)}</li></ul>`;
+    }
+
+    card.innerHTML = `
+      <div class="avatar" style="background:${col}">${initials(name)}</div>
+      <div class="todo-body">
+        <div class="todo-meta">
+          <span class="todo-name">${esc(name)}</span>
+          ${isMine ? '<span class="you-badge">You</span>' : ""}
+          <span class="todo-time" data-ts="${date?.toISOString()??""}">${timeAgo(date)}</span>
+          <span class="todo-date-badge">${date ? formatDate(date) : todayStr}</span>
+        </div>
+        ${itemsHTML}
+      </div>`;
+    return card;
+  }
+
+  setInterval(() => {
+    document.querySelectorAll(".todo-time[data-ts]").forEach(el => {
+      el.textContent = el.dataset.ts ? timeAgo(new Date(el.dataset.ts)) : "just now";
+    });
+  }, 30_000);
+
+  // ── Add input row ──────────────────────────
+  function addInputRow() {
+    const container = document.getElementById("todo-inputs");
+    const row = document.createElement("div");
+    row.className = "todo-input-row";
+    row.innerHTML = `
+      <div class="todo-input-bullet"></div>
+      <input class="todo-field" type="text" placeholder="Write a todo..." maxlength="200" autocomplete="off" />
+    `;
+    container.appendChild(row);
+    row.querySelector("input").focus();
+  }
+
+  // ── Add todo ───────────────────────────────
+  async function handleAddTodo() {
+    const fields = document.querySelectorAll(".todo-field");
+    const texts  = [...fields].map(f => f.value.trim()).filter(Boolean);
+    if (texts.length === 0) {
+      errorMsg.classList.add("show");
+      fields[0].focus();
+      return;
+    }
+    errorMsg.classList.remove("show");
+    addBtn.disabled = true; addBtn.classList.add("loading");
+    try {
+      const user = auth.currentUser;
+      const name = user.displayName || user.email.split("@")[0];
+      await addDoc(todosRef, {
+        name,
+        texts,                        // store as array
+        text: texts[0],               // keep for backward compat
+        createdAt: serverTimestamp(),
+        uid: user.uid
+      });
+      // Clear all inputs, keep just one row
+      const container = document.getElementById("todo-inputs");
+      container.innerHTML = `
+        <div class="todo-input-row">
+          <div class="todo-input-bullet"></div>
+          <input class="todo-field" type="text" placeholder="Write a todo..." maxlength="200" autocomplete="off" />
+        </div>`;
+      container.querySelector("input").focus();
+    } catch (e) {
+      alert("Couldn't save todo. Please try again.");
+    } finally {
+      addBtn.disabled = false; addBtn.classList.remove("loading");
+    }
+  }
+
+  // ── Login ──────────────────────────────────
+  async function handleLogin() {
+    const email = document.getElementById("login-email").value.trim();
+    const pass  = document.getElementById("login-password").value;
+    if (!email || !pass) { showAuthError("Please fill in all fields."); return; }
+    setBtnLoading("login-btn", true);
+    try {
+      await signInWithEmailAndPassword(auth, email, pass);
+    } catch (e) { showAuthError(friendly(e.code)); }
+    finally { setBtnLoading("login-btn", false); }
+  }
+
+  // ── Signup ─────────────────────────────────
+  async function handleSignup() {
+    const name  = document.getElementById("signup-name").value.trim();
+    const email = document.getElementById("signup-email").value.trim();
+    const pass  = document.getElementById("signup-password").value;
+    if (!name || !email || !pass) { showAuthError("Please fill in all fields."); return; }
+    if (pass.length < 6) { showAuthError("Password must be at least 6 characters."); return; }
+    setBtnLoading("signup-btn", true);
+    try {
+      const cred = await createUserWithEmailAndPassword(auth, email, pass);
+      await updateProfile(cred.user, { displayName: name });
+    } catch (e) { showAuthError(friendly(e.code)); }
+    finally { setBtnLoading("signup-btn", false); }
+  }
+
+  // ── Logout ─────────────────────────────────
+  async function handleLogout() { await signOut(auth); }
+
+  // ── UI helpers ─────────────────────────────
+  function switchTab(tab) {
+    document.getElementById("login-form").style.display  = tab === "login"  ? "flex" : "none";
+    document.getElementById("signup-form").style.display = tab === "signup" ? "flex" : "none";
+    document.getElementById("tab-login").classList.toggle("active",  tab === "login");
+    document.getElementById("tab-signup").classList.toggle("active", tab === "signup");
+    authError.classList.remove("show");
+  }
+  function showAuthError(msg) { authError.textContent = msg; authError.classList.add("show"); }
+  function setBtnLoading(id, on) {
+    const b = document.getElementById(id);
+    b.disabled = on; b.classList.toggle("loading", on);
+  }
+  function friendly(code) {
+    return {
+      "auth/user-not-found":       "No account found with this email.",
+      "auth/wrong-password":       "Incorrect password. Try again.",
+      "auth/invalid-credential":   "Invalid email or password.",
+      "auth/email-already-in-use": "Email already registered. Try logging in.",
+      "auth/invalid-email":        "Please enter a valid email address.",
+      "auth/weak-password":        "Password must be at least 6 characters.",
+      "auth/too-many-requests":    "Too many attempts. Try again later.",
+    }[code] || "Something went wrong. Please try again.";
+  }
+
+  // ── Expose to global ───────────────────────
+  window.handleLogin   = handleLogin;
+  window.handleSignup  = handleSignup;
+  window.handleLogout  = handleLogout;
+  window.switchTab     = switchTab;
+  window.handleAddTodo = handleAddTodo;
+  window.addInputRow   = addInputRow;
+
+  // Enter key
+  document.getElementById("login-password").addEventListener("keydown",  e => e.key==="Enter" && handleLogin());
+  document.getElementById("signup-password").addEventListener("keydown", e => e.key==="Enter" && handleSignup());
+  document.getElementById("todo-inputs").addEventListener("keydown", e => {
+    if (e.key === "Enter") handleAddTodo();
+  });
+  document.getElementById("todo-inputs").addEventListener("input", () => errorMsg.classList.remove("show"));
+</script>
+
+</body>
+</html>
