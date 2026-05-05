@@ -1069,9 +1069,7 @@
         renderList();
         updateStats(user.uid);
         updateLeaderboard(user.uid);
-        if(user.uid === ADMIN_UID){
-          document.getElementById('admin-btn').style.display='flex';
-        }
+        document.getElementById('admin-btn').style.display = (user.uid === ADMIN_UID) ? 'flex' : 'none';
         if(document.getElementById('admin-panel').style.display !== 'none'){
           renderAdminList();
         }
