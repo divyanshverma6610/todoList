@@ -424,6 +424,175 @@
     }
     .section-tab.active { background: var(--accent); color: #fff; }
 
+
+
+    /* ══ NOTIFICATION BANNER ════════════════════════════════ */
+    #notif-banner {
+      display: none;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white; border-radius: 14px; padding: 14px 18px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 20px rgba(102,126,234,.35);
+      align-items: center; gap: 12px;
+      overflow: hidden;
+      transition: opacity .4s ease, transform .4s cubic-bezier(.22,1,.36,1), max-height .4s ease, padding .4s ease, margin .4s ease;
+    }
+    #notif-banner.showing {
+      animation: notifSlideDown .5s cubic-bezier(.22,1,.36,1) forwards;
+    }
+    #notif-banner.hiding {
+      animation: notifSlideUp .4s ease forwards;
+    }
+    @keyframes notifSlideDown {
+      from { opacity: 0; transform: translateY(-20px) scale(0.96); max-height: 0; padding: 0 18px; margin-bottom: 0; }
+      to   { opacity: 1; transform: translateY(0)    scale(1);    max-height: 120px; padding: 14px 18px; margin-bottom: 20px; }
+    }
+    @keyframes notifSlideUp {
+      from { opacity: 1; transform: translateY(0) scale(1);    max-height: 120px; padding: 14px 18px; margin-bottom: 20px; }
+      to   { opacity: 0; transform: translateY(-12px) scale(0.96); max-height: 0; padding: 0 18px; margin-bottom: 0; }
+    }
+    #notif-banner .notif-icon { font-size: 1.4rem; flex-shrink: 0; }
+    #notif-banner .notif-text { flex: 1; }
+    #notif-banner .notif-title { font-weight: 700; font-size: 0.88rem; }
+    #notif-banner .notif-sub   { font-size: 0.75rem; opacity: .85; margin-top: 2px; }
+    .notif-allow-btn {
+      background: white; color: #764ba2; border: none;
+      border-radius: 8px; padding: 7px 14px;
+      font-family: inherit; font-size: 0.8rem; font-weight: 700;
+      cursor: pointer; flex-shrink: 0; transition: opacity .2s;
+    }
+    .notif-allow-btn:hover { opacity: .85; }
+    .notif-dismiss-btn {
+      background: none; border: none; color: rgba(255,255,255,.7);
+      font-size: 1.1rem; cursor: pointer; flex-shrink: 0; padding: 0 4px;
+    }
+    /* ══ ANIMATIONS ═════════════════════════════════════════ */
+
+    /* Page fade-in */
+    #app-screen { animation: pageFadeIn .5s ease; }
+    @keyframes pageFadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Todo card slide in */
+    .todo-card {
+      animation: cardSlideIn .35s cubic-bezier(.22,1,.36,1);
+      transform-origin: top center;
+    }
+    @keyframes cardSlideIn {
+      from { opacity: 0; transform: translateY(18px) scale(0.97); }
+      to   { opacity: 1; transform: translateY(0)   scale(1); }
+    }
+
+    /* Card delete animation */
+    .todo-card.removing {
+      animation: cardRemove .3s ease forwards;
+    }
+    @keyframes cardRemove {
+      from { opacity: 1; transform: scale(1);    max-height: 300px; }
+      to   { opacity: 0; transform: scale(0.95); max-height: 0; padding: 0; margin: 0; }
+    }
+
+    /* Checkbox mini pop */
+    .check-box.checked {
+      animation: checkPop .25s cubic-bezier(.22,1,.36,1);
+    }
+    @keyframes checkPop {
+      0%   { transform: scale(1); }
+      50%  { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+
+    /* Particle burst */
+    .particle {
+      position: fixed;
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 99998;
+      animation: particleBurst 1.2s ease-out forwards;
+    }
+    @keyframes particleBurst {
+      0%   { transform: translate(0,0) scale(1); opacity: 1; }
+      100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+    }
+
+    /* Stat card count up pulse */
+    .stat-value.updated {
+      animation: statPulse .4s ease;
+    }
+    @keyframes statPulse {
+      0%   { transform: scale(1); }
+      50%  { transform: scale(1.15); color: var(--accent); }
+      100% { transform: scale(1); }
+    }
+
+    /* Button press */
+    .add-btn:active, .auth-btn:active, .google-btn:active {
+      transform: scale(0.97);
+      transition: transform .1s ease;
+    }
+
+    /* Leaderboard rows stagger */
+    .leaderboard-row {
+      animation: rowFadeIn .4s ease both;
+    }
+    .leaderboard-row:nth-child(1) { animation-delay: .05s; }
+    .leaderboard-row:nth-child(2) { animation-delay: .10s; }
+    .leaderboard-row:nth-child(3) { animation-delay: .15s; }
+    .leaderboard-row:nth-child(4) { animation-delay: .20s; }
+    .leaderboard-row:nth-child(5) { animation-delay: .25s; }
+    @keyframes rowFadeIn {
+      from { opacity: 0; transform: translateX(-12px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    /* Calendar day hover bounce */
+    .day-cell { transition: transform .15s ease, background .2s, border-color .2s; }
+    .day-cell:hover { transform: translateY(-2px); }
+    .day-cell.active { transform: translateY(-2px) scale(1.05); }
+
+    /* Stat cards stagger on load */
+    .stat-card { animation: statFadeIn .5s ease both; }
+    .stat-card:nth-child(1) { animation-delay: .1s; }
+    .stat-card:nth-child(2) { animation-delay: .2s; }
+    .stat-card:nth-child(3) { animation-delay: .3s; }
+    @keyframes statFadeIn {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Input focus smooth */
+    .field-group input, .todo-line input, .add-card input {
+      transition: border-color .2s ease, box-shadow .2s ease, transform .15s ease;
+    }
+    .field-group input:focus, .todo-line input:focus {
+      transform: translateY(-1px);
+    }
+
+    /* Confetti canvas */
+    #confetti-canvas {
+      position: fixed; top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none; z-index: 99999;
+    }
+
+    /* Splash screen smooth exit */
+    #splash-screen { transition: opacity .5s ease; }
+
+    /* Progress bar animate */
+    .progress-bar-fill { transition: width .6s cubic-bezier(.22,1,.36,1); }
+
+    /* Topbar slide down */
+    .topbar {
+      animation: topbarSlide .5s cubic-bezier(.22,1,.36,1);
+    }
+    @keyframes topbarSlide {
+      from { opacity: 0; transform: translateY(-20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
     @keyframes fadeUp  { from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);} }
     @keyframes slideIn { from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);} }
     @keyframes spin    { to{transform:rotate(360deg);} }
@@ -525,6 +694,7 @@
 </div>
 
 <!-- ══ APP SCREEN ════════════════════════════════════════ -->
+<canvas id="confetti-canvas" style="display:none;"></canvas>
 <div id="app-screen">
   <div class="container">
 
@@ -541,6 +711,17 @@
         <button class="logout-btn" id="admin-btn" onclick="toggleAdminPanel()" style="display:none;">⚙️ Admin</button>
         <button class="logout-btn" onclick="handleLogout()">Logout</button>
       </div>
+    </div>
+
+    <!-- Notification permission banner -->
+    <div id="notif-banner">
+      <div class="notif-icon">🔔</div>
+      <div class="notif-text">
+        <div class="notif-title">Enable reminders</div>
+        <div class="notif-sub">We'll remind you at 11 PM if you have pending todos</div>
+      </div>
+      <button class="notif-allow-btn" onclick="allowNotifications()">Allow</button>
+      <button class="notif-dismiss-btn" onclick="dismissNotifBanner()">×</button>
     </div>
 
     <!-- Header -->
@@ -673,7 +854,7 @@
 
   // ── Admin UID — replace with your own Firebase UID ────────
   // To find your UID: Login → open browser console → type: firebase.auth().currentUser.uid
-  const ADMIN_UID = "Dj7MPvaGLxgF4Fy6LjhIVvLtzJF2";
+  const ADMIN_UID = "REPLACE_WITH_YOUR_UID";
 
   // ── State ────────────────────────────────────────────────
   let selectedDate  = todayStr();
@@ -809,7 +990,7 @@
 
     const itemsHTML = (items||[]).map((item, idx)=>`
       <div class="todo-item" data-idx="${idx}">
-        <div class="check-box${item.done?' checked':''}" onclick="toggleItem('${docId}',${idx})"></div>
+        <div class="check-box${item.done?' checked':''}" onclick="toggleItem('${docId}',${idx},this)"></div>
         <span class="item-bullet">•</span>
         <span class="item-text${item.done?' done':''}">${esc(item.text)}</span>
       </div>`).join('');
@@ -836,11 +1017,19 @@
   }
 
   // ── TOGGLE CHECKBOX ──────────────────────────────────────
-  async function toggleItem(docId, idx){
+  async function toggleItem(docId, idx, el){
     const todo = allTodos.find(t=>t.id===docId);
     if(!todo) return;
     const items = [...(todo.items||[])];
     items[idx] = { ...items[idx], done: !items[idx].done };
+
+    // Particle burst on the checkbox element
+    if(items[idx].done && el) burstParticles(el);
+
+    // Check if ALL items are now done → big confetti!
+    const allDone = items.every(it => it.done);
+    if(allDone && items.length > 0) setTimeout(launchConfetti, 300);
+
     try {
       await updateDoc(doc(db,'todos',docId), { items });
     } catch(e){ console.error(e); }
@@ -849,6 +1038,12 @@
   // ── DELETE TODO ──────────────────────────────────────────
   async function deleteTodo(docId){
     if(!confirm('Delete this todo?')) return;
+    // Animate card out first
+    const card = document.querySelector(`.todo-card[data-id="${docId}"]`);
+    if(card){
+      card.classList.add('removing');
+      await new Promise(r => setTimeout(r, 280));
+    }
     try {
       await deleteDoc(doc(db,'todos',docId));
     } catch(e){ alert('Could not delete. Please try again.'); }
@@ -873,6 +1068,8 @@
       if(tempStreak > bestStreak) bestStreak = tempStreak;
     }
     document.getElementById('stat-best-streak').textContent = bestStreak;
+    // Pulse all stat values
+    ['stat-streak','stat-completion','stat-best-streak'].forEach(pulseStatEl);
 
     // Completion rate
     const allItems    = myTodos.flatMap(t => t.items||[]);
@@ -1060,6 +1257,13 @@
       renderCalendar();
       updateAddCardDate();
 
+      // Request notification permission + schedule reminder
+      requestNotificationPermission().then(()=>{
+        scheduleNightReminder(user.uid);
+        startHourlyCheck(user.uid);
+      });
+      showNotifBannerIfNeeded();
+
       firstLoad=true;
       const q = query(todosRef, orderBy('createdAt','desc'));
       unsubTodos = onSnapshot(q, snap=>{
@@ -1164,10 +1368,214 @@
     return({'auth/user-not-found':'No account found with this email.','auth/wrong-password':'Incorrect password.','auth/invalid-credential':'Invalid email or password.','auth/email-already-in-use':'Email already registered.','auth/invalid-email':'Enter a valid email.','auth/weak-password':'Password must be 6+ characters.','auth/too-many-requests':'Too many attempts. Try later.'}[code]||'Something went wrong.');
   }
 
+  // ── PARTICLE BURST (checkbox) ────────────────────────────
+  function burstParticles(el){
+    const rect = el.getBoundingClientRect();
+    const cx   = rect.left + rect.width  / 2;
+    const cy   = rect.top  + rect.height / 2;
+    const colors = ['#C5603A','#38a169','#3A7DC5','#F6AD55','#9B59B6','#F687B3','#68D391'];
+    const count  = 14;
+
+    for(let i = 0; i < count; i++){
+      const angle  = (360 / count) * i + Math.random() * 20;
+      const dist   = 55 + Math.random() * 55;
+      const rad    = angle * Math.PI / 180;
+      const tx     = Math.cos(rad) * dist;
+      const ty     = Math.sin(rad) * dist;
+      const size   = 5 + Math.random() * 5;
+      const color  = colors[Math.floor(Math.random() * colors.length)];
+      const shapes = ['50%', '2px', '0%']; // circle, square, diamond
+      const shape  = shapes[Math.floor(Math.random() * shapes.length)];
+
+      const p = document.createElement('div');
+      p.className = 'particle';
+      p.style.cssText = `
+        left: ${cx - size/2}px;
+        top:  ${cy - size/2}px;
+        width: ${size}px;
+        height: ${size}px;
+        background: ${color};
+        border-radius: ${shape};
+        --tx: ${tx}px;
+        --ty: ${ty}px;
+        animation-duration: ${1.0 + Math.random() * 0.6}s;
+      `;
+      document.body.appendChild(p);
+      setTimeout(()=> p.remove(), 1800);
+    }
+  }
+
+  // ── CONFETTI ─────────────────────────────────────────────
+  function launchConfetti(){
+    const canvas = document.getElementById('confetti-canvas');
+    canvas.style.display = 'block';
+    const ctx = canvas.getContext('2d');
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const colors = ['#C5603A','#38a169','#3A7DC5','#E67E22','#9B59B6','#F5F0EB'];
+    const pieces = Array.from({length: 80}, () => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * -canvas.height,
+      w: Math.random() * 10 + 5,
+      h: Math.random() * 6 + 3,
+      color: colors[Math.floor(Math.random()*colors.length)],
+      rot: Math.random() * 360,
+      speed: Math.random() * 3 + 2,
+      spin: (Math.random() - 0.5) * 4,
+      wobble: Math.random() * 2
+    }));
+
+    let frame = 0;
+    function draw(){
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      pieces.forEach(p => {
+        p.y += p.speed;
+        p.x += Math.sin(frame * 0.02 + p.wobble) * 1.2;
+        p.rot += p.spin;
+        ctx.save();
+        ctx.translate(p.x + p.w/2, p.y + p.h/2);
+        ctx.rotate(p.rot * Math.PI/180);
+        ctx.fillStyle = p.color;
+        ctx.globalAlpha = Math.max(0, 1 - p.y / canvas.height);
+        ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+        ctx.restore();
+      });
+      frame++;
+      if(frame < 120) requestAnimationFrame(draw);
+      else { ctx.clearRect(0,0,canvas.width,canvas.height); canvas.style.display='none'; }
+    }
+    draw();
+  }
+
+  // ── STAT PULSE ANIMATION ──────────────────────────────────
+  function pulseStatEl(id){
+    const el = document.getElementById(id);
+    if(!el) return;
+    el.classList.remove('updated');
+    void el.offsetWidth; // reflow
+    el.classList.add('updated');
+    setTimeout(()=> el.classList.remove('updated'), 500);
+  }
+
   // Refresh timestamps
   setInterval(()=>{ document.querySelectorAll('.todo-time[data-ts]').forEach(el=>{ el.textContent=el.dataset.ts?timeAgo(new Date(el.dataset.ts)):'just now'; }); },30000);
 
+  // ── NOTIFICATIONS ─────────────────────────────────────────
+
+  // Ask permission when user logs in
+  async function requestNotificationPermission(){
+    if(!('Notification' in window)) return;
+    if(Notification.permission === 'default'){
+      await Notification.requestPermission();
+    }
+  }
+
+  // Send a notification
+  function sendNotification(title, body, icon='/icon-512.png'){
+    if(Notification.permission !== 'granted') return;
+    const n = new Notification(title, {
+      body,
+      icon,
+      badge: '/icon-512.png',
+      tag: 'todo-reminder', // prevents duplicate notifications
+      renotify: true,
+    });
+    // Click notification → open app
+    n.onclick = () => { window.focus(); n.close(); };
+  }
+
+  // Check at 23:00 if user has pending todos today
+  function scheduleNightReminder(uid){
+    const now   = new Date();
+    const night = new Date();
+    night.setHours(23, 0, 0, 0); // 11:00 PM today
+
+    // If already past 11pm today, schedule for tomorrow
+    if(now >= night) night.setDate(night.getDate() + 1);
+
+    const msUntilNight = night.getTime() - now.getTime();
+
+    setTimeout(() => {
+      // Get today's todos for this user
+      const today     = todayStr();
+      const myTodayTodos = allTodos.filter(t => t.uid === uid && t.dateKey === today);
+      const allItems  = myTodayTodos.flatMap(t => t.items||[]);
+      const remaining = allItems.filter(it => !it.done);
+
+      if(remaining.length > 0){
+        sendNotification(
+          "📋 You have pending todos!",
+          `You still have ${remaining.length} task${remaining.length>1?'s':''} left for today. Don't forget to complete them! 💪`
+        );
+      }
+
+      // Reschedule for next day
+      scheduleNightReminder(uid);
+
+    }, msUntilNight);
+
+    console.log(`⏰ Reminder scheduled in ${Math.round(msUntilNight/1000/60)} minutes`);
+  }
+
+  // Also check every hour if missed the 11pm window
+  function startHourlyCheck(uid){
+    setInterval(()=>{
+      const now = new Date();
+      // Only fire between 23:00 and 23:05
+      if(now.getHours() === 23 && now.getMinutes() < 5){
+        const today = todayStr();
+        const myTodayTodos = allTodos.filter(t => t.uid === uid && t.dateKey === today);
+        const allItems  = myTodayTodos.flatMap(t => t.items||[]);
+        const remaining = allItems.filter(it => !it.done);
+        if(remaining.length > 0){
+          sendNotification(
+            "📋 You have pending todos!",
+            `${remaining.length} task${remaining.length>1?'s':''} remaining today. You've got this! 💪`
+          );
+        }
+      }
+    }, 60 * 1000); // check every minute
+  }
+
   // Expose globals
+  // Notification banner handlers
+  async function allowNotifications(){
+    const perm = await Notification.requestPermission();
+    const banner = document.getElementById('notif-banner');
+    banner.classList.remove('showing');
+    banner.classList.add('hiding');
+    setTimeout(()=>{ banner.style.display = 'none'; }, 400);
+    if(perm === 'granted'){
+      setTimeout(()=>{
+        sendNotification('🎉 Reminders enabled!', "We'll remind you at 11 PM if you have pending todos.");
+      }, 500);
+    }
+  }
+  function dismissNotifBanner(){
+    const banner = document.getElementById('notif-banner');
+    banner.classList.remove('showing');
+    banner.classList.add('hiding');
+    setTimeout(()=>{ banner.style.display = 'none'; }, 400);
+    sessionStorage.setItem('notifDismissed','1');
+  }
+  function showNotifBannerIfNeeded(){
+    if(!('Notification' in window)) return;
+    if(Notification.permission === 'granted') return;
+    if(sessionStorage.getItem('notifDismissed')) return;
+    setTimeout(()=>{
+      const banner = document.getElementById('notif-banner');
+      banner.style.display = 'flex';
+      // Trigger animation on next frame
+      requestAnimationFrame(()=>{
+        banner.classList.remove('hiding');
+        banner.classList.add('showing');
+      });
+    }, 2000);
+  }
+
+  window.allowNotifications=allowNotifications;
+  window.dismissNotifBanner=dismissNotifBanner;
   window.handleGoogle=handleGoogle; window.handleLogin=handleLogin;
   window.handleSignup=handleSignup; window.handleLogout=handleLogout;
   window.switchTab=switchTab; window.handleAddTodo=handleAddTodo;
